@@ -1,6 +1,6 @@
 <details>
 <summary>
-An improved version of this note is at [`ObjectClassifiers`](/ObjectClassifiers).
+An improved version of this note is at [`ObjectClassifiers`](ObjectClassifiers).
 </summary>
 
 ```agda
@@ -13,7 +13,7 @@ open import 1Lab.HLevel.Closure
 open import 1Lab.Equiv
 
 -- Univalence from object classifiers in the sense of higher topos theory.
-module ObjectClassifier where
+module ObjectClassifiersOld where
 
 -- The type of arrows/bundles/fibrations.
 Bundle : ∀ ℓ → Type (lsuc ℓ)
