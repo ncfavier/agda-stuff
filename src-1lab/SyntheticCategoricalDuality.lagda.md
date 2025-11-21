@@ -10,6 +10,8 @@ open import Cat.Prelude hiding (_[_↦_])
 open import Data.Fin
 ```
 
+# synthetic categorical duality
+
 A synthetic account of categorical duality, based on an idea by [**David Wärn**](https://dwarn.se/).
 
 The theory of categories has a fundamental S₂-symmetry that swaps "source"

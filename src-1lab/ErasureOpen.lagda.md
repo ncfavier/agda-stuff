@@ -3,7 +3,9 @@ open import 1Lab.Prelude hiding (map)
 open import 1Lab.Reflection.Induction
 ```
 
-Investigating the fact that Agda's erasure modality is an open modality.
+# erasure as an open modality
+
+This post investigates the fact that Agda's erasure modality is an open modality.
 Terminology is borrowed and some proofs are extracted from the paper
 [Modalities in homotopy type theory](https://arxiv.org/abs/1706.07526)
 by Rijke, Shulman and Spitters.
@@ -18,8 +20,6 @@ private variable
   ℓ ℓ' : Level
   A B : Type ℓ
 ```
-
-## Erasure as an open modality
 
 The `Erased` monadic modality, internalising `@0`:
 
@@ -79,7 +79,7 @@ modal; in other words, we are not not `Compiling`.
 ... | ()
 ```
 
-## Open and closed modalities
+## open and closed modalities
 
 The corresponding **closed** modality `●` is given by the join with `Compiling`,
 which is equivalent to the following higher inductive type.

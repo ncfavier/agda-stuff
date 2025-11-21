@@ -1,7 +1,7 @@
 open import 1Lab.Prelude
 open import Data.Power
 
--- Lawvere's fixed point theorem and related paradoxes.
+-- Lawvere's fixed point theorem and related results.
 module Lawvere where
 
 private variable

@@ -15,6 +15,8 @@ open import Homotopy.Loopspace
 open import Homotopy.Base
 ```
 
+# tangent bundles of spheres
+
 A formalisation of [The tangent bundles of spheres](https://www.youtube.com/watch?v=9T9B9XBjVpk)
 by David Jaz Myers, Ulrik Buchholtz, Dan Christensen and Egbert Rijke, up until
 the proof of the hairy ball theorem.
