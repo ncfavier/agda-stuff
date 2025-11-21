@@ -2,6 +2,8 @@
 module ObjectClassifiers where
 ```
 
+# object classifiers and univalence
+
 <details>
 <summary>
 Imports and basic definitions.
@@ -129,10 +131,10 @@ types are equal^[This is implied by propositional extensionality, i.e. $(-1)$-un
 In [this Mastodon post](https://types.pl/@ncf/114737741485982172) I gave
 an example of a Tarski universe containing two distinct unit types and which
 can be closed under $\Sigma$- and identity types in such a way that $\chi_B$ and
-$\phi_B$ are both fibrewise equivalences, but which is not $n$-univalent for any $n$, thus
-suggesting that one cannot get rid of the $(-2)$-univalence assumption.
+$\phi_B$ are both fibrewise equivalences, but which is not $n$-univalent for any $n$.
+This suggests that one cannot get rid of the $(-2)$-univalence assumption.
 
-In this note I would like to suggest an explanation for *why* the converse of theorem 4.8.3 fails.
+In this post I would like to suggest an explanation for *why* the converse of theorem 4.8.3 fails.
 The key is to notice that $\mathsf{Bun}(B)$ and $\mathsf{Fam}(B)$ can be thought of as
 the endpoints of a *span* of types whose apex is the type of *pullback squares* with
 bottom-left corner $B$ and right-hand side map $\mathcal{U}^\mathsf{p}$:
@@ -249,10 +251,10 @@ section with the other projection recovers the maps $\chi_B$ and $\phi_B$.
     _ = refl
 ```
 
-We now come to the main point of this post: **each of $\pi_\downarrow$ and $\pi_\to$
+Now for the main point of this post: **each of $\pi_\downarrow$ and $\pi_\to$
 is an equivalence if and only if univalence holds**.
-This is reflected in the proof of [`Fibration-equiv`{.Agda}](https://1lab.dev/1Lab.Univalence#Fibration-equiv), which uses
-univalence *twice*, once in the left inverse proof and once in the right inverse proof.
+This is reflected in the 1Lab's proof of [`Fibration-equiv`{.Agda}](https://1lab.dev/1Lab.Univalence#Fibration-equiv), which uses
+univalence *twice*: once in the left inverse proof and once in the right inverse proof.
 This suggests that the two uses of univalence *cancel each other out* in a certain
 sense, so that we lose information if we only ask for a composite equivalence
 between $\mathsf{Bun}(B)$ and $\mathsf{Fam}(B)$.
@@ -268,7 +270,7 @@ rather than just equivalence.
 Notice that both statements are roughly of the form "there is a unique pullback square",
 but that they quantify over different *parts* of the pullback square.
 
-The easiest way to substantiate our claim is to specialise $B$ to the unit type;
+To see the forward implications, we specialise $B$ to the unit type;
 in this case, the span simplifies to the two projections out of the type of
 equivalences in $\mathcal{U}$:
 
