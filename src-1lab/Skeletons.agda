@@ -122,3 +122,9 @@ module _ (S≃C : is-equivalence S→C) where private
 
   ¬S≃C : ⊥
   ¬S≃C = not-no-fixed (from-pathp⁻ p)
+
+{-
+An even simpler way to see that is that any equivalence between S and
+C would be an isomorphism (see UnivalentEquivSkeletal), but C is clearly
+not gaunt.
+-}
