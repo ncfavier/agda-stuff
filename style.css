@@ -1,20 +1,20 @@
 @font-face {
-    font-family: JuliaMono;
-    src: url("https://cdn.jsdelivr.net/gh/cormullion/juliamono/webfonts/JuliaMono-Medium.woff2");
-    font-display: swap;
+  font-family: JuliaMono;
+  src: url("https://cdn.jsdelivr.net/gh/cormullion/juliamono/webfonts/JuliaMono-Medium.woff2");
+  font-display: swap;
 }
 
 @font-face {
-    font-family: JuliaMono;
-    font-weight: bold;
-    src: url("https://cdn.jsdelivr.net/gh/cormullion/juliamono/webfonts/JuliaMono-ExtraBold.woff2");
-    font-display: swap;
+  font-family: JuliaMono;
+  font-weight: bold;
+  src: url("https://cdn.jsdelivr.net/gh/cormullion/juliamono/webfonts/JuliaMono-ExtraBold.woff2");
+  font-display: swap;
 }
 
 :root {
   --background: #080709;
   --foreground: white;
-  --accent: #c15cff;
+  --accent: #ae4bff;
   --comment: hsl(0, 0%, 60%);
   --defined: var(--foreground);
   --literal: var(--accent);
@@ -23,6 +23,16 @@
   --bound: #c59efd;
   --module: var(--literal);
   --constructor: var(--literal);
+
+  font-family: Inter, "Source Han Sans", "Source Sans 3", "Gill Sans", "Trebuchet MS", "Open Sans", Helvetica, sans-serif;
+  font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+  font-optical-sizing: auto;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: InterVariable, "Source Han Sans", "Source Sans 3", "Gill Sans", "Trebuchet MS", "Open Sans", Helvetica, sans-serif;
+  }
 }
 
 ::selection {
@@ -36,9 +46,9 @@ html {
 
 body {
   margin: 0 auto;
-  max-width: 60em;
+  max-width: 52rem;
+  font-size: 1.1em;
   text-align: justify;
-  font-family: sans-serif;
   background-color: var(--background);
   color: var(--foreground);
 }
@@ -84,7 +94,7 @@ details[open] > summary::after {
   display: inline-block;
   font-size: 80%;
   margin-left: 10px;
-  opacity: 0.3;
+  opacity: 0;
 }
 
 .anchor:hover {
