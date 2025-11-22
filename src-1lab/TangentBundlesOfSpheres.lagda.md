@@ -3,12 +3,16 @@ open import 1Lab.Path.Cartesian
 open import 1Lab.Path.Reasoning
 open import 1Lab.Prelude
 
+open import Data.Dec
 open import Data.Int
 open import Data.Nat
 open import Data.Sum
 
+open import Homotopy.Space.Suspension.Properties
+open import Homotopy.Connectedness.Automation
 open import Homotopy.Space.Sphere.Degree
 open import Homotopy.Space.Suspension
+open import Homotopy.Connectedness
 open import Homotopy.Space.Sphere
 open import Homotopy.Conjugation
 open import Homotopy.Loopspace
@@ -238,4 +242,12 @@ hairy-ball zero sec = ∣-zero
 hairy-ball (suc n) sec with even-or-odd n | section→homotopy (suc n) sec
 ... | inl e | h = absurd (flip≠id n h)
 ... | inr o | _ = o
+
+T-connected : ∀ n (p : Sⁿ⁻¹ (3 + n)) → is-connected (Tⁿ⁻¹ (3 + n) p)
+T-connected n = Susp-elim-prop (λ _ → hlevel 1) (n-connected 2) (n-connected 2)
+
+-- As a corollary, not all connected types are pointed.
+¬connected→pointed
+  : ¬ ∀ {A : Type} → is-connected A → A
+¬connected→pointed h = decide! (hairy-ball 3 λ p → h (T-connected 0 p))
 ```
