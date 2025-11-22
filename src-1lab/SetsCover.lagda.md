@@ -22,12 +22,12 @@ precategories (whence $C$ and $D$ are both gaunt).
 
 While sets covering groupoids implies that every univalent category
 is weakly equivalent to a strict one, this shows that we cannot
-strengthen this to an equivalence.
+strengthen this to an equivalence (see also [Skeletons](Skeletons)).
 
 ```agda
 module _
-  {o ℓ}
-  (C : Precategory o ℓ) (D : Precategory o ℓ)
+  {oc ℓc od ℓd}
+  (C : Precategory oc ℓc) (D : Precategory od ℓd)
   (F : Functor C D) (F-eqv : is-equivalence F)
   (C-cat : is-category C)
   where
