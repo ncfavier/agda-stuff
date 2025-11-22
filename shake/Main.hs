@@ -124,7 +124,7 @@ main :: IO ()
 main = shakeArgsWith shakeOpts optDescrs \ flags _ -> pure $ Just do
   let skipAgda = SkipAgda `elem` flags
 
-  renderDiagram <- (. RenderDiagram) <$> addOracle \ (RenderDiagram contents) -> do
+  renderDiagram <- (. RenderDiagram) <$> addOracleCache \ (RenderDiagram contents) -> do
     let
       digest = take 12 . showDigest . sha1 . LBS.fromStrict $ T.encodeUtf8 contents
       diagramName = digest <.> "svg"
