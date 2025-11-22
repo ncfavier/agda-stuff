@@ -22,7 +22,7 @@ precategories (whence $C$ and $D$ are both gaunt).
 
 While sets covering groupoids implies that every univalent category
 is weakly equivalent to a strict one, this shows that we cannot
-strengthen this to an equivalence (see also [Skeletons](Skeletons)).
+strengthen this to an equivalence (see also [Skeletons](/Skeletons)).
 
 ```agda
 module _

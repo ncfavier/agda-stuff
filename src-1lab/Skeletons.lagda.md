@@ -129,5 +129,5 @@ module _ (S≃C : is-equivalence S→C) where private
 ```
 
 Alternatively, an equivalence $S \simeq C$ would imply that $C$ is
-strict (see [SetsCover](SetsCover)), but the category of finite sets
+strict (see [SetsCover](/SetsCover)), but the category of finite sets
 is of course not gaunt.
