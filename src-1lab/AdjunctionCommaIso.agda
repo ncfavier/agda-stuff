@@ -23,35 +23,35 @@ module _
   module D = Cat.Reasoning D
 
   to : Functor (F ↓ Id) (Id ↓ G)
-  to .F₀ o .x = o .x
-  to .F₀ o .y = o .y
+  to .F₀ o .dom = o .dom
+  to .F₀ o .cod = o .cod
   to .F₀ o .map = L-adjunct F⊣G (o .map)
-  to .F₁ f .α = f .α
-  to .F₁ f .β = f .β
-  to .F₁ {a} {b} f .sq =
-    L-adjunct F⊣G (b .map) C.∘ f .α         ≡˘⟨ L-adjunct-naturall F⊣G _ _ ⟩
-    L-adjunct F⊣G (b .map D.∘ F .F₁ (f .α)) ≡⟨ ap (L-adjunct F⊣G) (f .sq) ⟩
-    L-adjunct F⊣G (f .β D.∘ a .map)         ≡⟨ L-adjunct-naturalr F⊣G _ _ ⟩
-    G .F₁ (f .β) C.∘ L-adjunct F⊣G (a .map) ∎
+  to .F₁ f .top = f .top
+  to .F₁ f .bot = f .bot
+  to .F₁ {a} {b} f .com =
+    L-adjunct F⊣G (b .map) C.∘ f .top         ≡˘⟨ L-adjunct-naturall F⊣G _ _ ⟩
+    L-adjunct F⊣G (b .map D.∘ F .F₁ (f .top)) ≡⟨ ap (L-adjunct F⊣G) (f .com) ⟩
+    L-adjunct F⊣G (f .bot D.∘ a .map)         ≡⟨ L-adjunct-naturalr F⊣G _ _ ⟩
+    G .F₁ (f .bot) C.∘ L-adjunct F⊣G (a .map) ∎
   to .F-id = trivial!
   to .F-∘ _ _ = trivial!
 
   to-is-precat-iso : is-precat-iso to
   to-is-precat-iso .has-is-ff = is-iso→is-equiv is where
     is : ∀ {a b} → is-iso (to .F₁ {a} {b})
-    is .from f .α = f .α
-    is .from f .β = f .β
-    is {a} {b} .from f .sq = Equiv.injective (adjunct-hom-equiv F⊣G) $
-      L-adjunct F⊣G (b .map D.∘ F .F₁ (f .α)) ≡⟨ L-adjunct-naturall F⊣G _ _ ⟩
-      L-adjunct F⊣G (b .map) C.∘ f .α         ≡⟨ f .sq ⟩
-      G .F₁ (f .β) C.∘ L-adjunct F⊣G (a .map) ≡˘⟨ L-adjunct-naturalr F⊣G _ _ ⟩
-      L-adjunct F⊣G (f .β D.∘ a .map)         ∎
+    is .from f .top = f .top
+    is .from f .bot = f .bot
+    is {a} {b} .from f .com = Equiv.injective (adjunct-hom-equiv F⊣G) $
+      L-adjunct F⊣G (b .map D.∘ F .F₁ (f .top)) ≡⟨ L-adjunct-naturall F⊣G _ _ ⟩
+      L-adjunct F⊣G (b .map) C.∘ f .top         ≡⟨ f .com ⟩
+      G .F₁ (f .bot) C.∘ L-adjunct F⊣G (a .map) ≡˘⟨ L-adjunct-naturalr F⊣G _ _ ⟩
+      L-adjunct F⊣G (f .bot D.∘ a .map)         ∎
     is .rinv f = trivial!
     is .linv f = trivial!
   to-is-precat-iso .has-is-iso = is-iso→is-equiv is where
     is : is-iso (to .F₀)
-    is .from o .x = o .x
-    is .from o .y = o .y
+    is .from o .dom = o .dom
+    is .from o .cod = o .cod
     is .from o .map = R-adjunct F⊣G (o .map)
     is .rinv o = ↓Obj-path _ _ refl refl (L-R-adjunct F⊣G _)
     is .linv o = ↓Obj-path _ _ refl refl (R-L-adjunct F⊣G _)
