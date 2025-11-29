@@ -15,6 +15,7 @@ import Data.List
 import Data.Map qualified as Map
 import Data.Maybe
 import Data.Text qualified as T
+import Data.Text.IO qualified as T
 import Data.Text.Encoding qualified as T
 
 import Development.Shake
@@ -72,7 +73,7 @@ makeEverythingFile :: [FilePath] -> String
 makeEverythingFile = unlines . map (\ m -> "import " <> filenameToModule m)
 
 readFileText :: FilePath -> Action T.Text
-readFileText = fmap T.pack . readFile'
+readFileText x = need [x] >> liftIO (T.readFile x)
 
 importToModule :: String -> String
 importToModule s = innerText tags
@@ -117,7 +118,7 @@ diagramHeight fp = do
   pure $! it
 
 main :: IO ()
-main = shakeArgsWith shakeOpts optDescrs \ flags _ -> pure $ Just do
+main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
   let
     skipAgda = SkipAgda `elem` flags
 
@@ -181,14 +182,15 @@ main = shakeArgsWith shakeOpts optDescrs \ flags _ -> pure $ Just do
           traced ("pandoc write: " <> sourceFile) $ runIOorExplode do
             writeHtml5String def pandoc
       (markdown, agdaOutputFile) <- getSourceFile sourceDir sourceFile
-      if skipAgda then renderMarkdown markdown
+      if skipAgda then
+        renderMarkdown markdown
       else do
         case agdaOutputFile of
           HTML file -> do
-            html <- readFileText file
+            html <- liftIO $ T.readFile file
             pure $ "<pre class=\"Agda\">" <> html <> "</pre>"
           Markdown file -> do
-            markdown <- readFileText file
+            markdown <- liftIO $ T.readFile file
             renderMarkdown markdown
 
   -- Invoke Agda on a source directory and render all the modules in it.
@@ -257,7 +259,7 @@ main = shakeArgsWith shakeOpts optDescrs \ flags _ -> pure $ Just do
       , siteDir </> "main.js"
       ]
 
-  want ["all"]
+  want (if null targets then ["all"] else targets)
 
 runTCMTopPrettyErrors :: TCM a -> IO a
 runTCMTopPrettyErrors tcm = do
