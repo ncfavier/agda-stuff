@@ -37,6 +37,10 @@ newtype CompileDirectory = CompileDirectory (FilePath, FilePath)
   deriving (Show, Typeable, Eq, Hashable, Binary, NFData)
 type instance RuleResult CompileDirectory = ()
 
+newtype WriteDiagram = WriteDiagram T.Text
+  deriving (Show, Typeable, Eq, Hashable, Binary, NFData)
+type instance RuleResult WriteDiagram = FilePath
+
 sourceDir, source1labDir, buildDir, htmlDir, siteDir, diagramsDir, everything, everything1lab :: FilePath
 sourceDir = "src"
 source1labDir = "src-1lab"
@@ -124,24 +128,25 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
 
   diagramTemplate <- newCache \ () -> readFileText "diagram.template.tex"
 
-  let
-    renderDiagram contents = do
-      let
-        diagramDigest = take 12 . showDigest . sha1 . LBS.fromStrict $ T.encodeUtf8 contents
-        tex = diagramsDir </> diagramDigest <.> "tex"
-        svg = siteDir </> diagramDigest <.> "svg"
-      template <- diagramTemplate ()
-      writeFileChanged tex
-        $ T.unpack
-        $ T.replace "__BODY__" contents
-        $ template
-      need [svg]
-      pure (diagramDigest <.> "svg")
+  -- Write a diagram's source code to a .tex file with a filename computed
+  -- from a hash of the code, and return the filename of the corresponding
+  -- .svg file which can then be `need`ed.
+  writeDiagram <- (. WriteDiagram) <$> addOracle \ (WriteDiagram contents) -> do
+    let
+      diagramDigest = take 12 . showDigest . sha1 . LBS.fromStrict $ T.encodeUtf8 contents
+      tex = diagramsDir </> diagramDigest <.> "tex"
+    template <- diagramTemplate ()
+    writeFileChanged tex
+      $ T.unpack
+      $ T.replace "__BODY__" contents
+      $ template
+    pure (diagramDigest <.> "svg")
 
   diagramsDir </> "*.pdf" %> \ pdf -> do
     let texPath = pdf -<.> "tex"
     need [texPath]
-    command_ [EchoStdout False] "pdflatex" ["-output-directory", diagramsDir, "-interaction=nonstopmode", texPath]
+    command_ [EchoStdout False] "pdflatex"
+      ["-output-directory", diagramsDir, "-interaction=nonstopmode", texPath]
 
   siteDir </> "*.svg" %> \ svg -> do
     let pdf = diagramsDir </> takeFileName svg -<.> "pdf"
@@ -158,7 +163,8 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
     patchBlock (CodeBlock (id, classes, attrs) contents) | "quiver" `elem` classes = do
       let
         title = fromMaybe "commutative diagram" (lookup "title" attrs)
-      diagramName <- renderDiagram contents
+      diagramName <- writeDiagram contents
+      need [siteDir </> diagramName]
 
       height <- diagramHeight (siteDir </> diagramName)
       let attrs' = ("style", "height: " <> T.pack (show height) <> "px;"):attrs
