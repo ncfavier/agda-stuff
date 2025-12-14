@@ -55,7 +55,8 @@ essentially surjective on objects functor from)</small> a strict one.
 Given a category $C$ and a map $f : X \to C$ where $X$ is a set, we
 think of $f$ as a functor from a discrete category and take its
 [(bijective on objects, fully faithful) factorisation](https://ncatlab.org/nlab/show/%28bo%2C+ff%29+factorization+system):
-the fully faithful part is the desired weak equivalence.
+when $f$ is surjective, the fully faithful part is also essentially surjective
+on objects, so it is a weak equivalence from a strict category.
 
 ```agda
 module _
