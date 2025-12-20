@@ -7,7 +7,7 @@
       flake = false;
     };
     the1lab = {
-      url = "github:ncfavier/1lab/ncf/misc";
+      url = "github:ncfavier/1lab/stuff";
       flake = false;
     };
   };
