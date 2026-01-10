@@ -32,6 +32,7 @@ import Text.HTML.TagSoup
 import Text.Pandoc
 import Text.Pandoc.Filter
 import Text.Pandoc.Walk
+import Text.Pandoc.Citeproc
 
 newtype CompileDirectory = CompileDirectory (FilePath, FilePath)
   deriving (Show, Typeable, Eq, Hashable, Binary, NFData)
@@ -41,7 +42,7 @@ newtype WriteDiagram = WriteDiagram T.Text
   deriving (Show, Typeable, Eq, Hashable, Binary, NFData)
 type instance RuleResult WriteDiagram = FilePath
 
-sourceDir, source1labDir, buildDir, htmlDir, siteDir, diagramsDir, everything, everything1lab :: FilePath
+sourceDir, source1labDir, buildDir, htmlDir, siteDir, diagramsDir, everything, everything1lab, bibliography :: FilePath
 sourceDir = "src"
 source1labDir = "src-1lab"
 buildDir = "_build"
@@ -50,6 +51,7 @@ siteDir = buildDir </> "site"
 diagramsDir = buildDir </> "diagrams"
 everything = sourceDir </> "Everything.agda"
 everything1lab = source1labDir </> "Everything-1lab.agda"
+bibliography = "bibliography.bibtex"
 
 myHtmlBackend :: Backend
 myHtmlBackend = Backend htmlBackend'
@@ -178,15 +180,21 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
   let
     renderModule (sourceDir, sourceFile) = do
       let
+        patchMeta (Pandoc meta doc) = Pandoc meta' doc where
+          meta' = Meta
+            $ Map.insert "bibliography" (MetaString $ T.pack bibliography)
+            $ Map.insert "link-citations" (MetaBool True)
+            $ unMeta meta
         renderMarkdown markdown = do
           pandoc <- traced ("pandoc read: " <> sourceFile) $ runIOorExplode do
-            readMarkdown def {
+            processCitations . patchMeta =<< readMarkdown def {
               readerExtensions = foldr enableExtension pandocExtensions [Ext_autolink_bare_uris]
             } markdown
           pandoc <- walkM patchBlock pandoc
           pandoc <- applyJSONFilter def [] "pandoc-katex" pandoc
           traced ("pandoc write: " <> sourceFile) $ runIOorExplode do
             writeHtml5String def pandoc
+      need [bibliography]
       (markdown, agdaOutputFile) <- getSourceFile sourceDir sourceFile
       if skipAgda then
         renderMarkdown markdown
