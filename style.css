@@ -14,7 +14,8 @@
 :root {
   --background: #080709;
   --foreground: white;
-  --accent: #ae4bff;
+  --accent: #b458ff;
+  --hover-background: #333;
   --comment: hsl(0, 0%, 60%);
   --defined: var(--foreground);
   --literal: var(--accent);
@@ -109,6 +110,10 @@ h1:hover > .anchor::before, h2:hover > .anchor::before, h3:hover > .anchor::befo
   color: var(--module);
 }
 
+:any-link:hover {
+    background-color: var(--hover-background);
+}
+
 /* Aspects. */
 .Agda .Comment       { color: var(--comment) }
 .Agda .Background    { }
@@ -149,5 +154,5 @@ h1:hover > .anchor::before, h2:hover > .anchor::before, h3:hover > .anchor::befo
 
 /* Standard attributes. */
 .Agda a { text-decoration: none }
-.Agda a[href]:hover { background-color: #444; }
-.Agda [href].hover-highlight { background-color: #444; }
+.Agda a[href]:hover { background-color: var(--hover-background); }
+.Agda [href].hover-highlight { background-color: var(--hover-background); }
