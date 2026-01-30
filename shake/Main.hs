@@ -76,13 +76,21 @@ filenameToModule :: FilePath -> String
 filenameToModule f = dropExtensions f
 
 makeEverythingFile :: [FilePath] -> String
-makeEverythingFile = unlines . map (\ m -> "import " <> filenameToModule m)
+makeEverythingFile mods = unlines
+  $ "{-# OPTIONS --erasure #-}" -- any infective flags that are used by some modules but not all should be listed here
+  : map (\ m -> "import " <> filenameToModule m) mods
 
 readFileText :: FilePath -> Action T.Text
 readFileText x = need [x] >> liftIO (T.readFile x)
 
 importToModule :: String -> String
 importToModule s = innerText tags
+  where tags = parseTags s
+
+isImport :: String -> Bool
+isImport s
+  | "import":_ <- words (innerText tags) = True
+  | otherwise = False
   where tags = parseTags s
 
 shakeOpts :: ShakeOptions
@@ -255,7 +263,7 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
         <*> readFileLines (htmlDir </> "Everything-1lab.html")
     writeFile' index
       $ T.unpack
-      $ T.replace "@contents@" (T.pack $ unlines $ sortOn importToModule $ everythingAgda)
+      $ T.replace "@contents@" (T.pack $ unlines $ sortOn importToModule $ filter isImport $ everythingAgda)
       $ indexTemplate
     unless skipAgda do
       copyFile' (htmlDir </> "highlight-hover.js") (siteDir </> "highlight-hover.js")

@@ -1,13 +1,14 @@
 {
   inputs = {
-    nixpkgs.url = "nixpkgs/nixpkgs-unstable";
-    agda.url = "github:agda/agda/5cb475a67135ca4ce42428c6f0294cea58a3ca2b";
+    # nixpkgs.url = "nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:ncfavier/nixpkgs/agda-parallel";
+    agda.url = "github:agda/agda/2e59d81d60a4518a3176e01b62aba8e082aacdfa";
     agda-stdlib = {
       url = "github:agda/agda-stdlib";
       flake = false;
     };
     the1lab = {
-      url = "github:ncfavier/1lab/stuff";
+      url = "github:the1lab/1lab";
       flake = false;
     };
   };

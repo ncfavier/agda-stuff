@@ -1,4 +1,5 @@
 ```agda
+{-# OPTIONS --erasure #-}
 open import 1Lab.Prelude hiding (map)
 open import 1Lab.Reflection.Induction
 ```

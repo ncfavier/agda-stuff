@@ -1,14 +1,13 @@
 name: agda-stuff
 include: .
 depend:
-    1lab
+  1lab
 flags:
-    --cubical
-    --no-load-primitives
-    --postfix-projections
-    --allow-unsolved-metas
-    --rewriting
-    --guardedness
-    --erasure
-    -W noInteractionMetaBoundaries
-    -W noUnsupportedIndexedMatch
+  --cubical
+  --no-load-primitives
+  --postfix-projections
+  --rewriting
+  --guardedness
+  --two-level
+  --experimental-lazy-instances
+  -W noUnsupportedIndexedMatch

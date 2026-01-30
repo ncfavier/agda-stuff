@@ -1,16 +1,14 @@
 name: agda-stuff
 include: .
 depend:
-    standard-library
-    cubical
+  standard-library
+  cubical
 flags:
-    --cubical
-    --no-import-sorts
-    --postfix-projections
-    --hidden-argument-puns
-    --allow-unsolved-metas
-    --rewriting
-    --guardedness
-    --erasure
-    -W noInteractionMetaBoundaries
-    -W noUnsupportedIndexedMatch
+  --cubical
+  --no-import-sorts
+  --postfix-projections
+  --hidden-argument-puns
+  --rewriting
+  --guardedness
+  --erasure
+  -W noUnsupportedIndexedMatch

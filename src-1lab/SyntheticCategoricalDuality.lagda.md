@@ -1,4 +1,5 @@
 ```agda
+{-# OPTIONS --allow-unsolved-metas #-}
 open import 1Lab.Reflection.Regularity
 open import 1Lab.Path.Cartesian
 open import 1Lab.Reflection hiding (absurd)

@@ -1,3 +1,4 @@
+{-# OPTIONS --allow-unsolved-metas #-}
 module Torus where
 
 open import Cubical.Foundations.Prelude
