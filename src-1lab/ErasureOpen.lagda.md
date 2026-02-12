@@ -6,7 +6,7 @@ open import 1Lab.Reflection.Induction
 
 # erasure as an open modality
 
-This post investigates the fact that Agda's erasure modality is an open modality.
+We show that Agda's erasure modality is an open modality and investigate some consequences.
 Terminology is borrowed and some proofs are extracted from the paper
 [Modalities in homotopy type theory](https://arxiv.org/abs/1706.07526)
 by Rijke, Shulman and Spitters.
@@ -22,7 +22,7 @@ private variable
   A B : Type ℓ
 ```
 
-The `Erased` monadic modality, internalising `@0`:
+The `Erased` monadic modality, internalising the `@0` annotation:
 
 ```agda
 record Erased (@0 A : Type ℓ) : Type ℓ where
@@ -39,7 +39,7 @@ open Erased
 μ [ [ x ] ] = [ x ]
 ```
 
-...is equivalent to the **open** modality `○` induced by the following subsingleton:
+...is equivalent to the **open modality** `○` induced by the following proposition:
 
 ```agda
 data Compiling : Type where
@@ -104,8 +104,8 @@ unquoteDecl ●-elim = make-elim ●-elim (quote ●_)
   ps = ●-elim cone refl λ a i j → cone a (i ∨ j)
 ```
 
-The rest of this file investigates some properties of open and closed
-modalities that are not specific to the `Compiling` proposition we use here.
+The rest of this file investigates some general properties of open and closed
+modalities, instantiated for `Compiling`.
 
 <details>
 <summary>Some common definitions about higher modalities</summary>
@@ -358,7 +358,7 @@ The idea is to prove that the fibres of the `fracture` map are both
 `●`-modal and `●`-connected, and hence contractible.
 
 For the modal part, we observe that an element of the fibre of `fracture`
-at a triple `(o : ○ A, c : ● A, p)` can be rearranged into an element
+at a triple `(o : ○ A, c : ● A, p : ○→●○ o ≡ ●→●○ c)` can be rearranged into an element
 of the fibre of `η○` at `o` (which is `○`-connected, hence `●`-modal) together with
 a dependent path whose type is `●`-modal by standard results about higher modalities.
 
