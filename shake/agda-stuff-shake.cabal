@@ -2,7 +2,7 @@ cabal-version:      3.4
 name:               agda-stuff-shake
 version:            0.1.0.0
 license:            AGPL-3.0-or-later
-author:             Naïm Favier
+author:             Naïm Camille Favier
 maintainer:         n@monade.li
 category:           Development
 build-type:         Simple
