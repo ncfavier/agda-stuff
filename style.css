@@ -28,6 +28,8 @@
   font-family: Inter, "Source Han Sans", "Source Sans 3", "Gill Sans", "Trebuchet MS", "Open Sans", Helvetica, sans-serif;
   font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
   font-optical-sizing: auto;
+
+  scrollbar-color: var(--accent) var(--background);
 }
 
 @supports (font-variation-settings: normal) {
