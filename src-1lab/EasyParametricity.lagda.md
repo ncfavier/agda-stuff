@@ -21,7 +21,7 @@ open make-is-limit
 </details>
 
 This module formalises a few very interesting results from Jem Lord's
-[*Easy Parametricity*](https://hott-uf.github.io/2025/abstracts/HoTTUF_2025_paper_21.pdf).
+"[Easy Parametricity](https://hott-uf.github.io/2025/abstracts/HoTTUF_2025_paper_21.pdf)".
 
 ```agda
 module EasyParametricity {u} where
@@ -47,9 +47,11 @@ ap-bridge
 ap-bridge f (bridge app app𝟘 app𝟙) = bridge (f ⊙ app) (ap f app𝟘) (ap f app𝟙)
 
 postulate
-  -- An immediate consequence of Jem Lord's parametricity axiom: a function
-  -- out of U into a U-small type cannot tell 0 and 1 apart; this is all we need here.
-  -- In other words, U-small types are bridge-discrete.
+  -- Jem Lord's parametricity axiom states that every type A : U is U-null,
+  -- i.e. that every function U → A is constant.
+  -- We postulate an immediate consequence: such functions cannot tell
+  -- 𝟘 and 𝟙 apart, so any bridge in A is an equality; in other words,
+  -- U-small types are bridge-discrete.
   parametricity : ∀ {A : U} {x y : A} → Bridge A x y → x ≡ y
 
 -- The type of formal composites r ∘ l : A → B in C. We want to think of this
@@ -212,4 +214,30 @@ module _
 
       z0≡z1 : z (id∘ f) ≡ z (f ∘id)
       z0≡z1 = parametricity (ap-bridge z (factorisation-bridge C-complete C-category f))
+
+-- Unfolding the ideas above, we get a short proof that any function with
+-- the type (A : U) → A → A is the identity.
+module _ (f : (A : U) → A → A) (A : U) (a : A) where
+  f≡id : f A a ≡ a
+  f≡id = parametricity record where
+    -- A bridge from A to ⊤: the wide pullback of P-many copies of the map
+    -- a : ⊤ → A.
+    T : U → U
+    T P = Σ[ x ∈ A ] (P → x ≡ a)
+
+    T𝟘≃A : T 𝟘 ≃ A
+    T𝟘≃A = Σ-contr-snd λ _ → Π-dom-empty-is-contr λ ()
+
+    -- A dependent bridge from a to tt over T.
+    t : (P : U) → T P
+    t P = a , λ _ → refl
+
+    -- A bridge from f A a to a.
+    app : U → A
+    app P = f (T P) (t P) .fst
+    app𝟘  = ua-pathp→path T𝟘≃A (ap₂ f (ua T𝟘≃A) (path→ua-pathp T𝟘≃A refl))
+    app𝟙  = f (T 𝟙) (t 𝟙) .snd _
+
+id-is-unique : is-contr ((A : U) → A → A)
+id-is-unique = contr (λ _ a → a) λ f → sym (ext (f≡id f))
 ```
