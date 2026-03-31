@@ -20,9 +20,8 @@ open make-is-limit
 ```
 </details>
 
-This module formalises a few very interesting results from Jem Lord's recent work on
-[*Easy Parametricity*](https://hott-uf.github.io/2025/abstracts/HoTTUF_2025_paper_21.pdf),
-presented at [HoTT/UF 2025](https://hott-uf.github.io/2025/).
+This module formalises a few very interesting results from Jem Lord's
+[*Easy Parametricity*](https://hott-uf.github.io/2025/abstracts/HoTTUF_2025_paper_21.pdf).
 
 ```agda
 module EasyParametricity {u} where
