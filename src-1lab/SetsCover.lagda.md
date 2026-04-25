@@ -132,7 +132,12 @@ module _
 ## choice
 
 If every set is projective ($\mathrm{AC}_\infty$), then every type is
-covered by its set truncation.
+covered by its set truncation. We apply $\mathrm{AC}_\infty$ to the
+inclusion map $A \to \|A\|_0$, which is surjective, to get a section
+$s : \|A\|_0 \to A$, and it is straightforward to show that this map is
+surjective. Note that it is also injective, like all sections, but *not*
+an embedding, as that would imply that $A$ is equivalent to its set
+truncation.
 
 ```agda
 is-projective : ∀ {ℓ} (A : Type ℓ) → (κ : Level) → Type _
