@@ -28,7 +28,7 @@
   --constructor: var(--literal);
 
   font-family: Vollkorn, "Libertinus Serif", serif;
-  font-feature-settings: 'lnum', 'pnum';
+  font-feature-settings: 'lnum', 'tnum';
   font-optical-sizing: auto;
 
   scrollbar-color: var(--foreground) var(--background);
