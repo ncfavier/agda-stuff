@@ -14,16 +14,16 @@
 }
 
 :root {
-  --background: #080709;
-  --foreground: white;
-  --accent: #b458ff;
-  --hover-background: #333;
-  --comment: hsl(0, 0%, 60%);
+  --background: white;
+  --foreground: black;
+  --accent: #831bd9;
+  --accent2: #6666ff;
+  --hover-background: #ccc;
+  --comment: hsl(0, 0%, 50%);
   --defined: var(--foreground);
   --literal: var(--accent);
   --keyword: var(--foreground);
   --symbol: var(--foreground);
-  --bound: #c59efd;
   --module: var(--literal);
   --constructor: var(--literal);
 
@@ -31,7 +31,7 @@
   font-feature-settings: 'lnum', 'pnum';
   font-optical-sizing: auto;
 
-  scrollbar-color: var(--accent) var(--background);
+  scrollbar-color: var(--foreground) var(--background);
 }
 
 ::selection {
@@ -128,12 +128,12 @@ h1:hover > .anchor::before, h2:hover > .anchor::before, h3:hover > .anchor::befo
 .Agda .PrimitiveType { color: var(--defined) }
 .Agda .Pragma        { color: var(--keyword)   }
 .Agda .Operator      {}
-.Agda .Hole          { background: #490764 }
+.Agda .Hole          { background: #e4cbef }
 .Agda .Macro         { color: var(--defined) }
 
 /* NameKinds. */
-.Agda .Bound                  { color: var(--bound)   }
-.Agda .Generalizable          { color: var(--bound)   }
+.Agda .Bound                  { color: var(--accent2)   }
+.Agda .Generalizable          { color: var(--accent2)   }
 .Agda .InductiveConstructor   { color: var(--constructor) }
 .Agda .CoinductiveConstructor { color: var(--constructor) }
 .Agda .Datatype               { color: var(--defined) }
