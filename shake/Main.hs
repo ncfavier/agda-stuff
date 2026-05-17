@@ -73,7 +73,7 @@ myHtmlBackend = Backend htmlBackend'
   }
 
 filenameToModule :: FilePath -> String
-filenameToModule f = dropExtensions f
+filenameToModule f = intercalate "." $ splitDirectories $ dropExtensions f
 
 makeEverythingFile :: [FilePath] -> String
 makeEverythingFile mods = unlines
@@ -114,8 +114,8 @@ getSourceFile :: FilePath -> FilePath -> Action (T.Text, SourceType)
 getSourceFile sourceDir sourceFile = do
   source <- readFileText (sourceDir </> sourceFile)
   case takeExtensions sourceFile of
-    ".agda" -> pure (T.unlines ["```agda", source, "```"], HTML $ htmlDir </> sourceFile -<.> "html")
-    ".lagda.md" -> pure (source, Markdown $ htmlDir </> dropExtensions sourceFile <.> "md")
+    ".agda" -> pure (T.unlines ["```agda", source, "```"], HTML $ htmlDir </> filenameToModule sourceFile <.> "html")
+    ".lagda.md" -> pure (source, Markdown $ htmlDir </> filenameToModule sourceFile <.> "md")
     _ -> fail ("unsupported extension for file " <> sourceFile)
 
 -- | Compute the scaled height of a diagram (given in SVG), to use as a @style@ tag.
@@ -238,7 +238,7 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
     -- Render modules as needed and insert the results into the module template.
     moduleTemplate <- readFileText "module.html"
     for_ sourceFiles \ sourceFile -> do
-      let htmlFile = dropExtensions sourceFile <.> "html"
+      let htmlFile = filenameToModule sourceFile <.> "html"
       html <- renderModule (sourceDir, sourceFile)
       writeFile' (siteDir </> htmlFile)
         $ T.unpack
