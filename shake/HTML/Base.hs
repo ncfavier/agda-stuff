@@ -412,6 +412,9 @@ code moduleToURL onlyCode fileType = mconcat . if onlyCode
 
     otherAspectClasses = map show
 
+    isField | Just (Name (Just Field) _) <- aspect mi = True
+            | otherwise = False
+
     -- Notes are not included.
     noteClasses _s = []
 
@@ -439,6 +442,17 @@ code moduleToURL onlyCode fileType = mconcat . if onlyCode
         (maybe id (</>) u $ Network.URI.Encode.encode $ modToFile m "html")
       where
         u = Map.lookup m moduleToURL
-         -- Use named anchors for external links as they should be more stable(?)
-        anchor | Just a <- aName, Just u' <- u, u' /= "" = a
+
+        -- Use named anchors for external links as they should be more stable.
+        --
+        -- Note that named anchors are currently buggy, as `hiliteCName`
+        -- currently relies on the invariant that a name's qualifiers match
+        -- its top-level module of definition, but this invariant is broken
+        -- by things like `open M renaming (x to y)` (which sets the range
+        -- of y to the current module while not copying it) or
+        -- `module N = M using (x)` (which leaves the range of x unchanged
+        -- while copying it).
+        --
+        -- As a crude heuristic, we disable named anchors for record fields.
+        anchor | not isField, Just a <- aName, Just u' <- u, u' /= "" = a
                | otherwise = show defPos
