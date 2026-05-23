@@ -230,7 +230,7 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
           { optOverrideLibrariesFile = librariesFile
           , optDefaultLibs = False
           }
-        stBackends `setTCLens` [myHtmlBackend]
+        lensBackends `setSession` [myHtmlBackend]
         sourceFile <- srcFromPath =<< liftIO (absolute everything)
         source <- parseSource sourceFile
         checkResult <- typeCheckMain TypeCheck source

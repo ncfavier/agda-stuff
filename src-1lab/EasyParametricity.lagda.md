@@ -7,12 +7,12 @@ open import Cat.Diagram.Limit.Base
 open import Cat.Instances.Discrete
 open import Cat.Instances.Shape.Join
 open import Cat.Instances.Product
+open import Cat.Functor.Bifunctor
 
 open import Data.Sum
 
 import Cat.Reasoning
 import Cat.Functor.Reasoning
-import Cat.Functor.Bifunctor
 
 open Precategory
 open Functor
@@ -196,21 +196,22 @@ module _
 
   -- 1.b: dinaturality of transformations between bifunctors C^op × C → D is free.
   module _
-    (F G : Functor (C ^op ×ᶜ C) D)
-    (let module F = Cat.Functor.Bifunctor F) (let module G = Cat.Functor.Bifunctor G)
-    (η : ∀ x → D.Hom (F.₀ (x , x)) (G.₀ (x , x)))
+    (F G : Bifunctor (C ^op) C D)
+    (let module F = Bifunctor F) (let module G = Bifunctor G)
+    (η : ∀ x → D.Hom (F.F₀ x x) (G.F₀ x x))
     where
 
     dinatural
       : ∀ A B (f : C.Hom A B)
-      → G.first f D.∘ η B D.∘ F.second f ≡ G.second f D.∘ η A D.∘ F.first f
+      → (f G.◆ C.id) D.∘ η B D.∘ (C.id F.◆ f)
+      ≡ (C.id G.◆ f) D.∘ η A D.∘ (f F.◆ C.id)
     dinatural A B f = z0≡z1 where
 
       -- Given a factorisation A → X → B, we define the map
       --   F B A → F X X → G X X → G A B
       -- which interpolates between the two sides of the dinaturality hexagon.
-      z : Factorisation C A B → D.Hom (F.₀ (B , A)) (G.₀ (A , B))
-      z (factor X l r) = G.₁ (l , r) D.∘ η X D.∘ F.₁ (r , l)
+      z : Factorisation C A B → D.Hom (F.F₀ B A) (G.F₀ A B)
+      z (factor X l r) = (l G.◆ r) D.∘ η X D.∘ (r F.◆ l)
 
       z0≡z1 : z (id∘ f) ≡ z (f ∘id)
       z0≡z1 = parametricity (ap-bridge z (factorisation-bridge C-complete C-category f))

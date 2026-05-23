@@ -2,7 +2,7 @@
   inputs = {
     # nixpkgs.url = "nixpkgs/nixpkgs-unstable";
     nixpkgs.url = "github:ncfavier/nixpkgs/agda-parallel";
-    agda.url = "github:agda/agda/2e59d81d60a4518a3176e01b62aba8e082aacdfa";
+    agda.url = "github:agda/agda/295c60c79cd49e880b9f07add98462f1b82d26f2";
     agda-stdlib = {
       url = "github:agda/agda-stdlib";
       flake = false;

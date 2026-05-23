@@ -218,8 +218,8 @@ module _ {o h : Level} where
     C' .Hom-set b = C.Hom-set _ _
     C' .id = C.id
     C' .compose b m f = f true C.∘ f false
-    C' .compose-id b f true = ap₂ C._∘_ (transport-refl f) (transport-refl C.id) ∙ C.idr f
-    C' .compose-id b f false = ap₂ C._∘_ (transport-refl C.id) (transport-refl f) ∙ C.idl f
+    C' .compose-id b f true = Regularity.fast! refl ∙ C.idr f
+    C' .compose-id b f false = Regularity.fast! refl ∙ C.idl f
     -- C' .assoc = ?
 
   2Precategory→Precategory : 2Precategory o h → Precategory o h
@@ -238,11 +238,11 @@ module _ {o h : Level} where
       ap (C'.compose (if x y) x) (ext
         ( sym (subst-∙ C'.Hom _ _ C'.id)
           ∙ ap (λ p → subst C'.Hom p C'.id) (ext (∙-idr refl , ∙-idr refl))
-        , ap (λ p → subst C'.Hom p f) (ext (refl , refl))))
+        , {!ap (λ p → subst C'.Hom p f) (ext (refl , refl))!})) -- why did this break?
       ∙ C'.compose-id (if x y) f true
     C .idl {x} {y} f =
       ap (C'.compose (if x y) y) (ext
-        ( ap (λ p → subst C'.Hom p f) (ext (refl , refl))
+        ( {!ap (λ p → subst C'.Hom p f) (ext (refl , refl))!}
         , sym (subst-∙ C'.Hom _ _ C'.id)
           ∙ ap (λ p → subst C'.Hom p C'.id) (ext (∙-idr refl , ∙-idr refl))))
       ∙ C'.compose-id (if x y) f false

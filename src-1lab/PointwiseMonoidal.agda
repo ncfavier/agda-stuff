@@ -1,8 +1,10 @@
 {-# OPTIONS --allow-unsolved-metas #-}
 open import Cat.Prelude
 open import Cat.Functor.Base
+open import Cat.Functor.Closed
 open import Cat.Functor.Compose
 open import Cat.Functor.Constant
+open import Cat.Functor.Bifunctor
 open import Cat.Functor.Equivalence.Path
 open import Cat.Monoidal.Base
 open import Cat.Monoidal.Diagram.Monoid
@@ -24,15 +26,15 @@ module PointwiseMonoidal
 Pointwise : Monoidal-category Cat[ C , D ]
 Pointwise = pw where
   prod : Functor (Cat[ C , D ] ×ᶜ Cat[ C , D ]) Cat[ C , D ]
-  prod .F₀ (a , b) = M .-⊗- F∘ Cat⟨ a , b ⟩
-  prod .F₁ {x = x} {y = y} (na , nb) = M .-⊗- ▸ nat where
+  prod .F₀ (a , b) = Uncurry (M .-⊗-) F∘ Cat⟨ a , b ⟩
+  prod .F₁ {x = x} {y = y} (na , nb) = Uncurry (M .-⊗-) ▸ nat where
     nat : Cat⟨ x .fst , x .snd ⟩ => Cat⟨ y .fst , y .snd ⟩
     nat .η x = (na .η x) , (nb .η x)
     nat .is-natural x y f i = (na .is-natural x y f i) , (nb .is-natural x y f i)
-  prod .F-id = ext λ _ → M .-⊗- .F-id
-  prod .F-∘ f g = ext λ _ → M .-⊗- .F-∘ _ _
+  prod .F-id = ext λ _ → Uncurry (M .-⊗-) .F-id
+  prod .F-∘ f g = ext λ _ → Uncurry (M .-⊗-) .F-∘ _ _
   pw : Monoidal-category Cat[ C , D ]
-  pw .-⊗- = prod
+  pw .-⊗- = Curry prod
   pw .Unit = Const (M .Unit)
   pw .unitor-l = {! M .unitor-l  !}
   pw .unitor-r = {!   !}

@@ -154,7 +154,7 @@ preCompileHtml
   :: HtmlFlags
   -> TCM HtmlCompileEnv
 preCompileHtml flags = do
-  moduleToSourceId <- useTC stModuleToSourceId
+  moduleToSourceId <- useSession lensModuleToSourceId
   modulesToURL <- Map.traverseWithKey moduleToURL moduleToSourceId
   runLogHtmlWithMonadDebug $ do
     logHtml $ unlines
