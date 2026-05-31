@@ -64,7 +64,7 @@ mutual instance
   Bind-SP : Bind (eff SP)
   Bind-SP .Bind._>>=_ s f = s >>= λ (a , p) → f a <&> λ (b , q) → b , p *ℚ q
 
--- The generation dilemma as an SDP, parametrised by the probability that
+-- The generational dilemma as an SDP, parametrised by the probability that
 -- the control a will take us to state B.
 
 private
@@ -74,15 +74,15 @@ private
   data Y : Type where
     a b : Y
 
-Generation-dilemma : Ratio → SDP (eff SP)
-Generation-dilemma risk .SDP.X t = X
-Generation-dilemma risk .SDP.Y t GU = Y
-Generation-dilemma risk .SDP.Y t _ = ⊤
-Generation-dilemma risk .SDP.next t GU a = (GU , 1 -ℚ risk) ∷ (B , risk) ∷ []
-Generation-dilemma risk .SDP.next t GU b = pure BT
-Generation-dilemma risk .SDP.next t GS _ = pure GS
-Generation-dilemma risk .SDP.next t BT _ = pure GS
-Generation-dilemma risk .SDP.next t B  _ = pure B
+Generational-dilemma : Ratio → SDP (eff SP)
+Generational-dilemma risk .SDP.X t = X
+Generational-dilemma risk .SDP.Y t GU = Y
+Generational-dilemma risk .SDP.Y t _ = ⊤
+Generational-dilemma risk .SDP.next t GU a = (GU , 1 -ℚ risk) ∷ (B , risk) ∷ []
+Generational-dilemma risk .SDP.next t GU b = pure BT
+Generational-dilemma risk .SDP.next t GS _ = pure GS
+Generational-dilemma risk .SDP.next t BT _ = pure GS
+Generational-dilemma risk .SDP.next t B  _ = pure B
 ```
 
 `Val` should be some way to measure the well-being (wealth?) of a society.

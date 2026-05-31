@@ -15,7 +15,7 @@ open import Order.Instances.Rational
 open import Order.Total
 
 open import FPClimate.OUU3
-open import FPClimate.MM2 hiding (SDP; Generation-dilemma)
+open import FPClimate.MM2 hiding (SDP; Generational-dilemma)
 
 module FPClimate.MM4 where
 ```
