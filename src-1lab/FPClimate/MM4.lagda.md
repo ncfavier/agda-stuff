@@ -1,9 +1,13 @@
 ```agda
 open import 1Lab.Prelude
 open import Data.Dec
+open import Data.Fin hiding (_≤_)
+open import Data.Fin.Closure hiding (sum)
 open import Data.Fin.Finite
 open import Data.List
+open import Data.List.Quantifiers
 open import Data.List.NonEmpty
+open import Data.Sum
 open import Data.Rational.Base
 open import Data.Rational.Solver
 open import Order.Base
@@ -11,7 +15,7 @@ open import Order.Instances.Rational
 open import Order.Total
 
 open import FPClimate.OUU3
-open import FPClimate.MM2 hiding (SDP)
+open import FPClimate.MM2 hiding (SDP; Generation-dilemma)
 
 module FPClimate.MM4 where
 ```
@@ -268,26 +272,58 @@ initial state. Bellman's equation follows immediately.
 
 ## Exercise 7.8
 
-Instead of postulating `Finite` and `NonEmpty` we use our existing
-definitions. Note that the postulates below would be inconsistent with
-univalence if formulated with `Finite`, so we use `Listing` instead.
-
 ```agda
+open Listing ⦃ ... ⦄ hiding (univ)
+All-univ→∀
+  : ∀ {ℓ ℓ'} {A : Type ℓ} {P : A → Type ℓ'} ⦃ _ : Listing A ⦄
+  → All P univ
+  → ∀ a → P a
+All-univ→∀ all a = all-∈ all (find a)
+
+∀→All-univ
+  : ∀ {ℓ ℓ'} {A : Type ℓ} {P : A → Type ℓ'} ⦃ _ : Listing A ⦄
+  → (∀ a → P a)
+  → All P univ
+∀→All-univ f = to-all (λ a _ → f a)
+
+module _
+  {o ℓ}
+  (P : Poset o ℓ)
+  (P-total : is-decidable-total-order P)
+  where
+  open is-decidable-total-order P-total
+  compare! = decidable-total→strong P has-is-total dec-≤
+
+  argmax-worker
+    : {A : Type} (f : A → ⌞ P ⌟) (l : List A) ⦃ _ : is-nonempty l ⦄
+    → Σ[ a ∈ A ] All (λ a' → f a' ≤ f a) l
+  argmax-worker f (x ∷ []) = x , ≤-refl ∷ []
+  argmax-worker f (x ∷ xs@(_ ∷ _))
+    with a , p ← argmax-worker f xs | compare! (f a) (f x)
+  ... | inl fa≤fx = x , ≤-refl ∷ all-map (λ q → ≤-trans q fa≤fx) p
+  ... | inr fx≤fa = a , fx≤fa ∷ p
+
+  argmax
+    : {A : Type} (f : A → ⌞ P ⌟) ⦃ l : Listing A ⦄
+    → ⦃ _ : is-nonempty (l .Listing.univ) ⦄
+    → A
+  argmax f = argmax-worker f univ .fst
+
+  argmax-spec
+    : {A : Type} (f : A → ⌞ P ⌟) ⦃ l : Listing A ⦄ ⦃ _ : is-nonempty (l .Listing.univ) ⦄
+    → (x : A) → f x ≤ f (argmax f)
+  argmax-spec f = All-univ→∀ (argmax-worker f univ .snd)
+
 module BI
   {M} ⦃ _ : Bind M ⦄ (let module M = Effect M)
   (sdp : SDP M) (open SDP sdp)
   (measure : M.₀ Val → Val) (open Measure measure)
+  ⦃ fY : ∀ {t x} → Listing (Y t x) ⦄
+  ⦃ neY : ∀ {t x} → is-nonempty (univ {A = Y t x}) ⦄
   where
 
-  postulate
-    univ-nonempty : {A : Type} → ⦃ _ : Listing A ⦄ → ∥ A ∥ → is-nonempty (univ {A = A})
-    argmax : {A : Type} → (f : A → Val) → Σ (List A) is-nonempty → A
-    instance
-      fY : {t : Nat} → {x : X t} → Listing (Y t x)
-    neY : {t : Nat} → (x : X t) → ∥ Y t x ∥
-
   optExt : {t n : Nat} → PolicySeq (suc t) n → Policy t
-  optExt ps x = argmax (cval ps x) (univ , univ-nonempty (neY x))
+  optExt ps x = argmax Val-poset Val-total (cval ps x)
 ```
 
 ## Exercise 7.9
