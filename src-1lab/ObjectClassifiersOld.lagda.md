@@ -1,6 +1,6 @@
 <details>
 <summary>
-An improved version of this note is at [`ObjectClassifiers`](ObjectClassifiers).
+An improved version of this note is at [`ObjectClassifiers`](ObjectClassifiers.html).
 </summary>
 
 ```agda
