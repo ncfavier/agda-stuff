@@ -49,7 +49,7 @@ html {
 
 body {
   margin: 0 auto;
-  max-width: 50em;
+  max-width: 60em;
   text-align: justify;
   background-color: var(--background);
   color: var(--foreground);
