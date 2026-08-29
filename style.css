@@ -1,58 +1,21 @@
-@font-face {
-  font-family: JuliaMono;
-  src: url("https://cdn.jsdelivr.net/gh/cormullion/juliamono/webfonts/JuliaMono-Medium.woff2");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: JuliaMono;
-  font-weight: bold;
-  src: url("https://cdn.jsdelivr.net/gh/cormullion/juliamono/webfonts/JuliaMono-ExtraBold.woff2");
-  font-display: swap;
-}
+@import "https://monade.li/main.css";
 
 :root {
-  --background: white;
-  --foreground: black;
-  --accent: #831bd9;
-  --accent2: #6666ff;
-  --hover-background: #ccc;
-  --comment: hsl(0, 0%, 50%);
+  --accent2: #45b6ee;
+
+  --comment: hsl(0, 0%, 65%);
   --defined: var(--foreground);
-  --literal: var(--accent);
+  --bound: var(--accent);
+  --literal: var(--accent2);
   --keyword: var(--foreground);
   --symbol: var(--foreground);
-  --module: var(--literal);
+  --module: var(--bound);
   --constructor: var(--literal);
-
-  font-family: Inter, "Source Han Sans", "Source Sans 3", "Gill Sans", "Trebuchet MS", "Open Sans", Helvetica, sans-serif;
-  font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
-  font-optical-sizing: auto;
-
-  scrollbar-color: var(--foreground) var(--background);
-}
-
-@supports (font-variation-settings: normal) {
-  :root {
-    font-family: InterVariable, "Source Han Sans", "Source Sans 3", "Gill Sans", "Trebuchet MS", "Open Sans", Helvetica, sans-serif;
-  }
-}
-
-::selection {
-  background-color: var(--accent);
-  color: white;
-}
-
-html {
-  padding: 0 1em;
 }
 
 body {
-  margin: 0 auto;
   max-width: 60em;
   text-align: justify;
-  background-color: var(--background);
-  color: var(--foreground);
 }
 
 blockquote {
@@ -78,27 +41,9 @@ pre {
   white-space: nowrap;
 }
 
-pre, code {
-  font-family: JuliaMono, monospace;
-}
-
 .diagram-container {
   text-align: center;
   overflow-x: auto;
-}
-
-details {
-  border-inline-start: 4px solid var(--accent);
-  padding-inline-start: 8px;
-}
-
-details > summary::after {
-  content: '(click to unfold)';
-  color: var(--comment);
-}
-
-details[open] > summary::after {
-  content: '(click to fold)';
 }
 
 .anchor {
@@ -115,15 +60,6 @@ h1:hover > .anchor, h2:hover > .anchor, h3:hover > .anchor, h4:hover > .anchor, 
   opacity: 1;
 }
 
-:any-link {
-  text-decoration: none;
-  color: var(--module);
-}
-
-:any-link:hover {
-    background-color: var(--hover-background);
-}
-
 /* Aspects. */
 .Agda .Comment       { color: var(--comment) }
 .Agda .Background    { }
@@ -135,12 +71,12 @@ h1:hover > .anchor, h2:hover > .anchor, h3:hover > .anchor, h4:hover > .anchor, 
 .Agda .PrimitiveType { color: var(--defined) }
 .Agda .Pragma        { color: var(--keyword)   }
 .Agda .Operator      {}
-.Agda .Hole          { background: #e4cbef }
+.Agda .Hole          { background: #e4cbef; color: #14111c }
 .Agda .Macro         { color: var(--defined) }
 
 /* NameKinds. */
-.Agda .Bound                  { color: var(--accent2)   }
-.Agda .Generalizable          { color: var(--accent2)   }
+.Agda .Bound                  { color: var(--bound)   }
+.Agda .Generalizable          { color: var(--bound)   }
 .Agda .InductiveConstructor   { color: var(--constructor) }
 .Agda .CoinductiveConstructor { color: var(--constructor) }
 .Agda .Datatype               { color: var(--defined) }
@@ -161,8 +97,3 @@ h1:hover > .anchor, h2:hover > .anchor, h3:hover > .anchor, h4:hover > .anchor, 
 .Agda .TypeChecks           { color: var(--foreground); background: #ADD8E6        }
 .Agda .Deadcode             { color: var(--foreground); background: #808080        }
 .Agda .ShadowingInTelescope { color: var(--foreground); background: #808080        }
-
-/* Standard attributes. */
-.Agda a { text-decoration: none }
-.Agda a[href]:hover { background-color: var(--hover-background); }
-.Agda [href].hover-highlight { background-color: var(--hover-background); }

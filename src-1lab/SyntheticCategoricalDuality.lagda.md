@@ -13,17 +13,17 @@ open import Data.Fin
 
 # synthetic categorical duality
 
-A synthetic account of categorical duality, based on an idea by [**David Wärn**](https://dwarn.se/).
+A synthetic account of categorical duality, based on an idea by [David Wärn](https://dwarn.se/).
 
-The theory of categories has a fundamental S₂-symmetry that swaps "source"
+The theory of categories has a fundamental $S_2$-symmetry that swaps "source"
 and "target", which can be expressed synthetically by defining categories
-in the context of the delooping BS₂.
-By choosing as our delooping the type of 2-element types, this amounts
-to defining categories relative to an arbitrary 2-element type X, which
-we can think of as the set {source, target} except we've forgotten
+in the context of the delooping $\mathbf{B}S_2$.
+By choosing as our delooping the type of $2$-element types, this amounts
+to defining categories relative to an arbitrary $2$-element type $X$, which
+we can think of as the set $\{\mathsf{source}, \mathsf{target}\}$ except we've forgotten
 which is which.
-Then, instantiating this with a chosen 2-element type recovers usual
-categories, and the non-trivial symmetry of BS₂ automatically gives
+Then, instantiating this with a chosen $2$-element type recovers usual
+categories, and the non-trivial symmetry of $\mathbf{B}S_2$ automatically gives
 a symmetry of the type of categories which coincides with the usual
 categorical opposite.
 

@@ -142,13 +142,13 @@ bottom-left corner $B$ and right-hand side map $\mathcal{U}^\mathsf{p}$:
 ~~~{.quiver}
 % https://q.uiver.app/#q=WzAsNCxbMCwxLCJCIl0sWzEsMSwiXFxtYXRoY2Fse1V9Il0sWzEsMCwiXFxtYXRoY2Fse1V9XlxcYnVsbGV0Il0sWzAsMCwiQSIsWzI3MCw2MCw2MCwxXV0sWzAsMSwiYSIsMix7ImNvbG91ciI6WzI3MCw2MCw2MF19LFsyNzAsNjAsNjAsMV1dLFsyLDEsIlxcbWF0aGNhbHtVfV5cXG1hdGhzZntwfSJdLFszLDAsInAiLDIseyJjb2xvdXIiOlsyNzAsNjAsNjBdfSxbMjcwLDYwLDYwLDFdXSxbMywyLCJhXisiLDAseyJjb2xvdXIiOlsyNzAsNjAsNjBdfSxbMjcwLDYwLDYwLDFdXSxbMywxLCIiLDEseyJjb2xvdXIiOlsyNzAsNjAsNjBdLCJzdHlsZSI6eyJuYW1lIjoiY29ybmVyIn19XV0=
 \[\begin{tikzcd}
-	\textcolor{accent2}{A} & {\mathcal{U}^\bullet} \\
+	\textcolor{accent}{A} & {\mathcal{U}^\bullet} \\
 	B & {\mathcal{U}}
-	\arrow["{a^+}", color={accent2}, from=1-1, to=1-2]
-	\arrow["p"', color={accent2}, from=1-1, to=2-1]
-	\arrow["\lrcorner"{anchor=center, pos=0.125}, color={accent2}, draw=none, from=1-1, to=2-2]
+	\arrow["{a^+}", color={accent}, from=1-1, to=1-2]
+	\arrow["p"', color={accent}, from=1-1, to=2-1]
+	\arrow["\lrcorner"{anchor=center, pos=0.125}, color={accent}, draw=none, from=1-1, to=2-2]
 	\arrow["{\mathcal{U}^\mathsf{p}}", from=1-2, to=2-2]
-	\arrow["a"', color={accent2}, from=2-1, to=2-2]
+	\arrow["a"', color={accent}, from=2-1, to=2-2]
 \end{tikzcd}\]
 ~~~
 
@@ -251,7 +251,7 @@ section with the other projection recovers the maps $\chi_B$ and $\phi_B$.
     _ = refl
 ```
 
-Now for the main point of this post: **each of $\pi_\downarrow$ and $\pi_\to$
+We now come to the main point of this post: **each of $\pi_\downarrow$ and $\pi_\to$
 is an equivalence if and only if univalence holds**.
 This is reflected in the 1Lab's proof of [`Fibration-equiv`{.Agda}](https://1lab.dev/1Lab.Univalence#Fibration-equiv), which uses
 univalence *twice*: once in the left inverse proof and once in the right inverse proof.
