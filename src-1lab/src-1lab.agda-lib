@@ -3,11 +3,8 @@ include: .
 depend:
   1lab
 flags:
-  --cubical
   --no-load-primitives
+  --prop
   --postfix-projections
-  --rewriting
-  --guardedness
-  --two-level
   --experimental-lazy-instances
   -W noUnsupportedIndexedMatch

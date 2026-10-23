@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wunused-imports #-}
 
--- | Backend for generating highlighted, hyperlinked HTML from Agda sources.
+-- | Backend for generating highlighted, hyperlinked HTML from Mikan sources.
 
 module HTML.Backend
   ( htmlBackend
@@ -23,14 +23,14 @@ import Data.Map (Map)
 
 import GHC.Generics (Generic)
 
-import Agda.Interaction.Options
+import Mikan.Interaction.Options
     ( ArgDescr(ReqArg, NoArg)
     , OptDescr(..)
     )
-import Agda.Compiler.Backend
-import Agda.Compiler.Common (curIF)
-import Agda.Interaction.Library.Base (_libName, LibName)
-import Agda.Utils.FileName
+import Mikan.Compiler.Backend
+import Mikan.Compiler.Common (curIF)
+import Mikan.Interaction.Library.Base (_libName, LibName)
+import Mikan.Utils.FileName
 
 -- | Options for HTML generation
 

@@ -139,7 +139,7 @@ module _
           .commutes {inr _} {inr _} _ → C.idl _
           .universal eps comm → eps (inr _)
           .factors {inr _} eps comm → C.idl _
-          .unique eps comm other fac → sym (C.idl _) ∙ fac (inr _)
+          .unique eps comm other fac → sym (fac (inr _)) ∙ C.idl _
 
       -- When P is contractible, we are taking the limit of the arrow diagram
       -- A → B, so our factorisation is A → A → B.
@@ -155,7 +155,7 @@ module _
           .universal eps comm → eps (inl (lift tt))
           .factors {inl _} eps comm → C.idl _
           .factors {inr _} eps comm → comm {inl _} {inr _} _
-          .unique eps comm other fac → sym (C.idl _) ∙ fac (inl _)
+          .unique eps comm other fac → sym (fac (inl _)) ∙ C.idl _
 
 -- Theorem 1: let C be a U-complete univalent category and D a locally
 -- U-small category.

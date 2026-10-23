@@ -2,6 +2,7 @@
 <summary>Imports</summary>
 
 ```agda
+{-# OPTIONS --allow-unsolved-metas #-}
 open import Cat.Prelude
 open import Cat.Strict
 open import Cat.Instances.StrictCat
@@ -15,6 +16,9 @@ open import Cat.Groupoid
 open import Cat.Univalent.Rezk
 open import Cat.Univalent.Rezk.HIT hiding (C^-elim-set)
 open import Cat.Instances.Discrete
+
+open import Data.Id.Base
+open import Data.Id.Properties
 
 open import 1Lab.Classical
 open import 1Lab.Path.Reasoning
@@ -226,42 +230,45 @@ module _
   strictify : ∀ {ℓ} → n-Type ℓ 3 → StrictGrpd ℓ
   strictify G .fst = G ↓
   strictify G .snd .fst = hlevel 2
-  strictify G .snd .snd p = make-invertible (sym p) (∙-invl _) (∙-invr _)
+  strictify G .snd .snd p = make-invertible (symᵢ p) (∙ᵢ-invl p) (∙ᵢ-invr p)
     where open Cat.Reasoning (G ↓)
 
   rezk : ∀ {ℓ} → StrictGrpd ℓ → n-Type ℓ 3
   rezk (G , G-grpd , G-strict) = el (C^ G) squash
 
+{-
   rezk-strictify : ∀ {ℓ} (G : n-Type ℓ 3) → rezk (strictify G) ≡ G
   rezk-strictify G using X , f , f-surj ← sc ∣ G ∣
     = n-ua (compare , compare-is-equiv)
     where
       open Cat.Reasoning (G ↓)
-      open is-pregroupoid (strictify G .snd .snd)
+      open is-pregroupoid _ (strictify G .snd .snd)
 
       commutes→glueᵀ
         : ∀ {x y z} {p : x ≅ y} {q : x ≅ z} {r : y ≅ z}
-        → to q ≡ to p ∙ to r
+        → to q ≡ to p ∙ᵢ to r
         → Triangle (glue p) (glue q) (glue r)
       commutes→glueᵀ {p = p} {q} {r} t = glueᵀ p r ▷ ap C^.glue (ext (sym t))
 
       compare : C^ (G ↓) → ∣ G ∣
-      compare = C^-rec (hlevel 3) f to λ _ _ → ∙-filler _ _
+      compare = C^-rec (hlevel 3) f (Id≃path.to ⊙ to) λ _ _ → {! ∙ᵢ-filler  !}
 
       compare-is-equiv : is-equiv compare
       compare-is-equiv .is-eqv g = ∥-∥-out! do
         (x , p) ← f-surj g
         pure $ contr (inc x , p) $ uncurry $ C^-elim-set
           (λ _ → Π-is-hlevel 2 λ _ → fibre-is-hlevel 3 squash (hlevel 3) compare g _ _)
-          (λ y q → glue (hom→iso (p ∙ sym q)) ,ₚ flip₂ (∙-filler'' p (sym q)))
+          (λ y q → glue (hom→iso (Id≃path.from (p ∙ sym q))) ,ₚ {!flip₂ (∙-filler'' p (sym q))!})
+          -- λ q → funext-dep-i0 λ r → Σ-set-square (λ _ → hlevel 2) $ commutes→glueᵀ $ {!   !}
           λ q → funext-dep-i0 λ r →
             Σ-set-square (λ _ → hlevel 2) $ commutes→glueᵀ $
-              p ∙ sym ⌜ transport (λ z → to q z ≡ g) r ⌝ ≡⟨ ap! (subst-path-left r (to q)) ⟩
-              p ∙ sym (sym (to q) ∙ r)                   ≡⟨ ap (p ∙_) (sym-∙ _ _) ⟩
-              p ∙ sym r ∙ to q                           ≡⟨ ∙-assoc _ _ _ ⟩
-              (p ∙ sym r) ∙ to q                         ∎
+              p ∙ᵢ symᵢ ⌜ transport (λ z → to q z ≡ g) r ⌝ ≡⟨ {!ap! (subst-path-left r (to q))!} ⟩
+              p ∙ᵢ symᵢ (symᵢ (to q) ∙ᵢ r)                   ≡⟨ {!ap (p ∙_) (sym-∙ _ _)!} ⟩
+              p ∙ᵢ symᵢ r ∙ᵢ to q                           ≡⟨ {!∙-assoc _ _ _!} ⟩
+              (p ∙ᵢ symᵢ r) ∙ᵢ to q                         ∎
 
   groupoid-of-groupoids : ∀ {ℓ} → is-groupoid (n-Type ℓ 3)
   groupoid-of-groupoids = retract→is-hlevel 3 rezk strictify rezk-strictify
     StrictGrpd-is-groupoid
+-}
 ```

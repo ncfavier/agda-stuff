@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wunused-imports #-}
 
--- | Function for generating highlighted, hyperlinked HTML from Agda
+-- | Function for generating highlighted, hyperlinked HTML from Mikan
 -- sources.
 
 module HTML.Base
@@ -28,8 +28,9 @@ import qualified Data.IntMap as IntMap
 import qualified Data.Map as Map
 import Data.Map (Map)
 import Data.List.Split (splitWhen)
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as T
+import Data.Text (Text)
+import Data.Text qualified as T
+import Data.Text.Lazy qualified as LT
 
 import GHC.Generics (Generic)
 
@@ -52,24 +53,24 @@ import Text.Blaze.Html.Renderer.Text ( renderHtml )
   -- The imported operator (!) attaches an Attribute to an Html value
   -- The defined operator (!!) attaches a list of such Attributes
 
-import Agda.Interaction.Highlighting.Precise hiding (toList)
+import Mikan.Interaction.Highlighting.Precise hiding (toList)
 
-import Agda.Syntax.Common
-import Agda.Syntax.TopLevelModuleName
+import Mikan.Syntax.Common
+import Mikan.Syntax.TopLevelModuleName
 
-import qualified Agda.TypeChecking.Monad as TCM
+import qualified Mikan.TypeChecking.Monad as TCM
   ( Interface(..)
   )
 
-import Agda.Utils.Function
-import Agda.Utils.List1 (String1, pattern (:|))
-import qualified Agda.Utils.List1   as List1
-import qualified Agda.Utils.IO.UTF8 as UTF8
-import Agda.Syntax.Common.Pretty
+import Mikan.Utils.Function
+import Mikan.Utils.List1 (String1, pattern (:|))
+import qualified Mikan.Utils.List1   as List1
+import qualified Mikan.Utils.IO.UTF8 as UTF8
+import Mikan.Syntax.Common.Pretty
 
-import Agda.Utils.Impossible
-import Agda.Utils.String (rtrim)
-import Agda.Main (printAgdaDataDir)
+import Mikan.Utils.Impossible
+import Mikan.Utils.String (rtrim)
+import Mikan.Main (printDataDir)
 
 import System.IO.Silently
 
@@ -77,10 +78,10 @@ type ModuleToURL = Map TopLevelModuleName String
 
 getDataFileName :: FilePath -> IO FilePath
 getDataFileName name = do
-  dir <- capture_ printAgdaDataDir -- ...
+  dir <- capture_ printDataDir -- ...
   return (rtrim dir </> name)
 
--- | The Agda data directory containing the files for the HTML backend.
+-- | The data directory containing the files for the HTML backend.
 
 htmlDataDir :: FilePath
 htmlDataDir = "html"
@@ -241,7 +242,7 @@ writeRenderedHtml
   => Text       -- ^ Rendered page
   -> FilePath   -- ^ Output path.
   -> m ()
-writeRenderedHtml html target = liftIO $ UTF8.writeTextToFile target html
+writeRenderedHtml html target = liftIO $ UTF8.writeTextToFile target (LT.fromStrict html)
 
 
 -- | Attach multiple Attributes
@@ -262,7 +263,7 @@ page css
      htmlHighlight
      modName
      pageContent =
-  renderHtml $ if htmlHighlight
+  LT.toStrict $ renderHtml $ if htmlHighlight
                then pageContent
                else Html5.docTypeHtml $ hdr <> rest
   where

@@ -1,10 +1,24 @@
 {
+  # nixConfig.extra-substituters = [
+  #   "https://mikan.cachix.org"
+  #   "https://1lab.cachix.org"
+  # ];
+  # nixConfig.extra-trusted-public-keys = [
+  #   "mikan.cachix.org-1:l1i58iAKFlQr1VcWPaYXExVYoVVPx8vXs+jfEttRFhA="
+  #   "1lab.cachix.org-1:eYjd9F9RfibulS4OSFBYeaTMxWojPYLyMqgJHDvG1fs="
+  # ];
+
   inputs = {
     # nixpkgs.url = "nixpkgs/nixpkgs-unstable";
     nixpkgs.url = "github:ncfavier/nixpkgs/agda-parallel";
-    agda.url = "github:agda/agda/295c60c79cd49e880b9f07add98462f1b82d26f2";
-    agda-stdlib = {
-      url = "github:agda/agda-stdlib";
+    mikan.url = "git+https://codeberg.org/1lab/mikan";
+    # mikan.url = "git+https://codeberg.org/1lab/mikan?rev=2f7dce157928563a52632be23765ae28776c5afe";
+    # agda-stdlib = {
+    #   url = "git+https://codeberg.org/amyliao/agda-stdlib";
+    #   flake = false;
+    # };
+    cubical = {
+      url = "git+https://codeberg.org/1lab/agda-cubical";
       flake = false;
     };
     the1lab = {
@@ -18,48 +32,54 @@
     pkgs = import nixpkgs {
       inherit system;
       overlays = [
-        inputs.agda.overlays.default
+        inputs.mikan.overlays.default
         (final: prev: {
           haskell = prev.haskell // {
             packageOverrides = final.lib.composeExtensions prev.haskell.packageOverrides
               (hfinal: hprev: {
-                Agda = final.haskell.lib.enableCabalFlag hprev.Agda "debug";
+                # Mikan = inputs.mikan.packages.${system}.default;
+                Agda = hfinal.Mikan;
               });
           };
-        })
-        (self: super: {
-          agdaPackages = super.agdaPackages.overrideScope (aself: asuper: {
-            standard-library = asuper.standard-library.overrideAttrs {
-              version = "unstable-${inputs.agda-stdlib.shortRev}";
-              src = inputs.agda-stdlib;
-            };
+          agdaPackages = prev.agdaPackages.overrideScope (aself: asuper: {
+            # standard-library = asuper.standard-library.overrideAttrs {
+            #   version = "unstable-${inputs.agda-stdlib.shortRev}";
+            #   src = inputs.agda-stdlib;
+            #   postPatch = ''
+            #     rm -rf Algebra
+            #   '';
+            # };
             _1lab = asuper._1lab.overrideAttrs {
               version = "unstable-${inputs.the1lab.shortRev}";
               src = inputs.the1lab;
+            };
+            cubical = asuper.cubical.overrideAttrs {
+              version = "unstable-${inputs.cubical.shortRev}";
+              src = inputs.cubical;
             };
           });
         })
       ];
     };
+    inherit (pkgs) lib;
 
     agdaLibs = libs: [
-      libs.standard-library
+      # libs.standard-library
       libs.cubical
       libs._1lab
     ];
-    agda = pkgs.agda.withPackages agdaLibs;
+    agda = pkgs.agdaPackages.withPackages agdaLibs;
     AGDA_LIBRARIES_FILE = pkgs.agdaPackages.mkLibraryFile agdaLibs;
 
-    texlive = pkgs.texlive.combine {
-      inherit (pkgs.texlive)
-        collection-basic
-        collection-latex
-        xcolor
-        preview
-        pgf tikz-cd pgfplots
-        mathpazo
-        varwidth xkeyval standalone;
-    };
+    texlive = pkgs.texliveSmall.withPackages (tpkgs: with tpkgs; [
+      collection-basic
+      collection-latex
+      xcolor
+      preview
+      pgf tikz-cd pgfplots
+      mathpazo
+      varwidth xkeyval standalone
+    ]);
 
     deps = [
       pkgs.pandoc-katex
@@ -76,15 +96,16 @@
       "\\bZ" = "\\mathbb{Z}"
     '';
 
-    shakefile = pkgs.haskellPackages.callCabal2nix "agda-stuff-shake" ./shake {};
+    hpkgs = pkgs.haskellPackages;
+    shakefile = hpkgs.callCabal2nix "agda-stuff-shake" ./shake {};
   in {
     devShells.${system} = {
       default = self.packages.${system}.default.overrideAttrs (old: {
         nativeBuildInputs = old.nativeBuildInputs or [] ++ [ agda ];
-        Agda = pkgs.haskellPackages.Agda; # prevent garbage collection
+        Mikan = hpkgs.Mikan;
       });
 
-      shakefile = pkgs.haskellPackages.shellFor {
+      shakefile = hpkgs.shellFor {
         packages = _: [ shakefile ];
         nativeBuildInputs = deps ++ [
           pkgs.haskell-language-server

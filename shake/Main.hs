@@ -1,10 +1,10 @@
-import Agda.Compiler.Backend hiding (getEnv)
-import Agda.Interaction.Imports
-import Agda.Interaction.Library.Base
-import Agda.Interaction.Options (CommandLineOptions(..), defaultOptions)
-import Agda.TypeChecking.Errors
-import Agda.Utils.FileName
-import Agda.Utils.Monad
+import Mikan.Compiler.Backend hiding (getEnv)
+import Mikan.Interaction.Imports
+import Mikan.Interaction.Library.Base
+import Mikan.Interaction.Options (CommandLineOptions(..), defaultOptions)
+import Mikan.TypeChecking.Errors
+import Mikan.Utils.FileName
+import Mikan.Utils.Monad
 
 import Control.Monad.Error.Class
 
@@ -77,11 +77,11 @@ filenameToModule f = intercalate "." $ splitDirectories $ dropExtensions f
 
 makeEverythingFile :: [FilePath] -> String
 makeEverythingFile mods = unlines
-  $ "{-# OPTIONS --erasure #-}" -- any infective flags that are used by some modules but not all should be listed here
-  : map (\ m -> "import " <> filenameToModule m) mods
+  $ [] -- any infective flags that are used by some modules but not all should be listed here
+  ++ map (\ m -> "import " <> filenameToModule m) mods
 
-readFileText :: FilePath -> Action T.Text
-readFileText x = need [x] >> liftIO (T.readFile x)
+readFileText' :: FilePath -> Action T.Text
+readFileText' x = need [x] >> liftIO (T.readFile x)
 
 importToModule :: String -> String
 importToModule s = innerText tags
@@ -112,7 +112,7 @@ data SourceType = HTML FilePath | Markdown FilePath
 -- by Agda.
 getSourceFile :: FilePath -> FilePath -> Action (T.Text, SourceType)
 getSourceFile sourceDir sourceFile = do
-  source <- readFileText (sourceDir </> sourceFile)
+  source <- readFileText' (sourceDir </> sourceFile)
   case takeExtensions sourceFile of
     ".agda" -> pure (T.unlines ["```agda", source, "```"], HTML $ htmlDir </> filenameToModule sourceFile <.> "html")
     ".lagda.md" -> pure (source, Markdown $ htmlDir </> filenameToModule sourceFile <.> "md")
@@ -136,7 +136,7 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
   let
     skipAgda = SkipAgda `elem` flags
 
-  diagramTemplate <- newCache \ () -> readFileText "diagram.template.tex"
+  diagramTemplate <- newCache \ () -> readFileText' "diagram.template.tex"
 
   -- Write a diagram's source code to a .tex file with a filename computed
   -- from a hash of the code, and return the filename of the corresponding
@@ -226,7 +226,7 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
     unless skipAgda $ traced "agda" do
       root <- absolute sourceDir
       runTCMTopPrettyErrors do
-        setCommandLineOptions' root defaultOptions
+        setCommandLineOptions' (Just root) defaultOptions
           { optOverrideLibrariesFile = librariesFile
           , optDefaultLibs = False
           }
@@ -236,7 +236,7 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
         checkResult <- typeCheckMain TypeCheck source
         callBackend "HTML" IsMain checkResult
     -- Render modules as needed and insert the results into the module template.
-    moduleTemplate <- readFileText "module.html"
+    moduleTemplate <- readFileText' "module.html"
     for_ sourceFiles \ sourceFile -> do
       let htmlFile = filenameToModule sourceFile <.> "html"
       html <- renderModule (sourceDir, sourceFile)
@@ -255,7 +255,7 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
   -- Generate the index.
   siteDir </> "index.html" %> \ index -> do
     need ["modules"]
-    indexTemplate <- readFileText "index.html"
+    indexTemplate <- readFileText' "index.html"
     everythingAgda <-
       if skipAgda then pure []
       else (<>)

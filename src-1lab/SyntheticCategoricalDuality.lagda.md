@@ -218,8 +218,8 @@ module _ {o h : Level} where
     C' .Hom-set b = C.Hom-set _ _
     C' .id = C.id
     C' .compose b m f = f true C.∘ f false
-    C' .compose-id b f true = Regularity.fast! refl ∙ C.idr f
-    C' .compose-id b f false = Regularity.fast! refl ∙ C.idl f
+    C' .compose-id b f true = {! Regularity.fast! refl ∙ C.idr f !}
+    C' .compose-id b f false = {! Regularity.fast! refl ∙ C.idl f !}
     -- C' .assoc = ?
 
   2Precategory→Precategory : 2Precategory o h → Precategory o h

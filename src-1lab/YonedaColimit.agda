@@ -34,7 +34,7 @@ open Terminal Δ1
     sym (comm f ηₚ y $ₚ id) ∙∙ ap (eta x .η y) id-comm ∙∙ eta x .is-natural _ _ f $ₚ id
   colim .factors eta comm = ext λ x f →
     sym (comm f ηₚ x $ₚ id) ∙ ap (eta _ .η x) (idr _)
-  colim .unique eta comm univ' fac' = ext λ x _ → fac' x ηₚ x $ₚ id
+  colim .unique eta comm univ' fac' = ext λ x _ → sym $ fac' x ηₚ x $ₚ id
 
 Δ0 : Initial (PSh ℓ C)
 Δ0 = {! Const ?  !}

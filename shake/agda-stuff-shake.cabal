@@ -13,7 +13,7 @@ executable agda-stuff-shake
     other-modules: HTML.Base,
                    HTML.Backend,
     build-depends:    base,
-                      Agda,
+                      Mikan,
                       shake,
                       blaze-html,
                       bytestring,
