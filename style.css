@@ -4,12 +4,12 @@
   --accent2: #6ecfff;
 
   --comment: hsl(0, 0%, 65%);
-  --defined: var(--foreground);
-  --bound: var(--accent);
+  --defined: var(--accent);
+  --bound: var(--foreground);
   --literal: var(--accent2);
   --keyword: var(--foreground);
   --symbol: var(--foreground);
-  --module: var(--bound);
+  --module: var(--defined);
   --constructor: var(--literal);
 }
 
@@ -100,5 +100,5 @@ h1:hover > .anchor, h2:hover > .anchor, h3:hover > .anchor, h4:hover > .anchor, 
 .Agda .IncompletePattern    { color: var(--foreground); background: #F5DEB3        }
 .Agda .Error                { color: red;   text-decoration: underline }
 .Agda .TypeChecks           { color: var(--foreground); background: #ADD8E6        }
-.Agda .Deadcode             { color: var(--foreground); background: #808080        }
-.Agda .ShadowingInTelescope { color: var(--foreground); background: #808080        }
+.Agda .Deadcode             { color: var(--foreground); background: #4C4C4C        }
+.Agda .ShadowingInTelescope { color: var(--foreground); background: #4C4C4C        }
