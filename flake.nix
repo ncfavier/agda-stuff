@@ -9,8 +9,7 @@
   # ];
 
   inputs = {
-    # nixpkgs.url = "nixpkgs/nixpkgs-unstable";
-    nixpkgs.url = "github:ncfavier/nixpkgs/agda-parallel";
+    nixpkgs.url = "nixpkgs/nixpkgs-unstable";
     mikan.url = "git+https://codeberg.org/1lab/mikan";
     # mikan.url = "git+https://codeberg.org/1lab/mikan?rev=2f7dce157928563a52632be23765ae28776c5afe";
     # agda-stdlib = {
