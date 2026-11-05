@@ -2,6 +2,8 @@
 module Erasure where
 ```
 
+Investigating the erasure modality. See also [`ErasureOpen`](ErasureOpen.html).
+
 ::: warning
 Mikan removed support for erasure and rewriting, so the following code
 is not type-checked. This module is kept for historical reference.
@@ -12,9 +14,6 @@ open import Agda.Primitive renaming (Set to Type; Setω to Typeω)
 open import Relation.Binary.PropositionalEquality hiding ([_])
 open import Axiom.Extensionality.Propositional
 {-# BUILTIN REWRITE _≡_ #-}
-
--- Investigating the erasure modality. See also ErasureOpen
-module Erasure where
 
 private variable
   a b : Level

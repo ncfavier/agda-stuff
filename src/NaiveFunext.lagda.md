@@ -2,6 +2,9 @@
 module NaiveFunext where
 ```
 
+Naïve function extensionality implies function extensionality (HoTT book exercise 4.9).
+This is actually weaker as we assume naïve function extensionality for *dependent* functions.
+
 ::: warning
 Mikan is not fully compatible with the Agda standard library, so the following code
 is not type-checked. This module is kept for historical reference.
@@ -13,10 +16,6 @@ open import Agda.Primitive renaming (Set to Type)
 open import Data.Product
 open import Data.Product.Properties
 open import Relation.Binary.PropositionalEquality
-
--- Naïve function extensionality implies function extensionality (HoTT book exercise 4.9).
--- This is actually weaker as we assume ~ → ≡ for *dependent* functions.
-module NaiveFunext where
 
 private variable
   ℓ ℓ' : Level
