@@ -139,7 +139,7 @@ The key is to notice that $\mathsf{Bun}(B)$ and $\mathsf{Fam}(B)$ can be thought
 the endpoints of a *span* of types whose apex is the type of *pullback squares* with
 bottom-left corner $B$ and right-hand side map $\mathcal{U}^\mathsf{p}$:
 
-~~~{.quiver}
+```quiver
 % https://q.uiver.app/#q=WzAsNCxbMCwxLCJCIl0sWzEsMSwiXFxtYXRoY2Fse1V9Il0sWzEsMCwiXFxtYXRoY2Fse1V9XlxcYnVsbGV0Il0sWzAsMCwiQSIsWzI3MCw2MCw2MCwxXV0sWzAsMSwiYSIsMix7ImNvbG91ciI6WzI3MCw2MCw2MF19LFsyNzAsNjAsNjAsMV1dLFsyLDEsIlxcbWF0aGNhbHtVfV5cXG1hdGhzZntwfSJdLFszLDAsInAiLDIseyJjb2xvdXIiOlsyNzAsNjAsNjBdfSxbMjcwLDYwLDYwLDFdXSxbMywyLCJhXisiLDAseyJjb2xvdXIiOlsyNzAsNjAsNjBdfSxbMjcwLDYwLDYwLDFdXSxbMywxLCIiLDEseyJjb2xvdXIiOlsyNzAsNjAsNjBdLCJzdHlsZSI6eyJuYW1lIjoiY29ybmVyIn19XV0=
 \[\begin{tikzcd}
 	\textcolor{accent}{A} & {\mathcal{U}^\bullet} \\
@@ -150,7 +150,7 @@ bottom-left corner $B$ and right-hand side map $\mathcal{U}^\mathsf{p}$:
 	\arrow["{\mathcal{U}^\mathsf{p}}", from=1-2, to=2-2]
 	\arrow["a"', color={accent}, from=2-1, to=2-2]
 \end{tikzcd}\]
-~~~
+```
 
 Let us call such a pullback square a *classification* over $B$: it consists of
 a fibration over $B$ that is classified by a given map $a : B \to \mathcal{U}$.
@@ -182,14 +182,14 @@ Note that we *cannot* similarly contract $A$ away as that would implicitly assum
 We obtain the span promised above by projecting the left and bottom maps of the
 pullback square, respectively.
 
-~~~{.quiver}
+```quiver
 % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXG1hdGhzZntCdW59KEIpIl0sWzEsMCwiXFxtYXRoc2Z7Q2xzfShCKSJdLFsyLDAsIlxcbWF0aHNme0ZhbX0oQikiXSxbMSwwLCJcXHBpX1xcZG93bmFycm93IiwyXSxbMSwyLCJcXHBpX1xccmlnaHRhcnJvdyJdXQ==
 \[\begin{tikzcd}
 	{\mathsf{Bun}(B)} & {\mathsf{Cls}(B)} & {\mathsf{Fam}(B)}
 	\arrow["{\pi_\downarrow}"', from=1-2, to=1-1]
 	\arrow["{\pi_\rightarrow}", from=1-2, to=1-3]
 \end{tikzcd}\]
-~~~
+```
 
 ```agda
     π↓ : Cls → Bun
@@ -203,7 +203,7 @@ Observe that both $\pi_\downarrow$ and $\pi_\to$ have sections, given by
 taking fibres and total spaces respectively, and that composing one
 section with the other projection recovers the maps $\chi_B$ and $\phi_B$.
 
-~~~{.quiver}
+```quiver
 % https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXG1hdGhzZntCdW59KEIpIl0sWzEsMCwiXFxtYXRoc2Z7Q2xzfShCKSJdLFsyLDAsIlxcbWF0aHNme0ZhbX0oQikiXSxbMSwwLCJcXHBpX1xcZG93bmFycm93IiwwLHsib2Zmc2V0IjotMn1dLFsxLDIsIlxccGlfXFxyaWdodGFycm93IiwwLHsib2Zmc2V0IjotMn1dLFswLDEsIlxcc2lnbWFfXFxkb3duYXJyb3ciLDAseyJvZmZzZXQiOi0yfV0sWzIsMSwiXFxzaWdtYV9cXHRvIiwwLHsib2Zmc2V0IjotMn1dLFswLDIsIlxcY2hpX0IiLDAseyJjdXJ2ZSI6LTN9XSxbMiwwLCJcXHBoaV9CIiwwLHsiY3VydmUiOi0zfV1d
 \[\begin{tikzcd}
 	{\mathsf{Bun}(B)} & {\mathsf{Cls}(B)} & {\mathsf{Fam}(B)}
@@ -214,7 +214,7 @@ section with the other projection recovers the maps $\chi_B$ and $\phi_B$.
 	\arrow["{\phi_B}", curve={height=-35pt}, from=1-3, to=1-1]
 	\arrow["{\sigma_\to}", shift left=2, from=1-3, to=1-2]
 \end{tikzcd}\]
-~~~
+```
 
 ```agda
     σ↓ : Bun → Cls
@@ -274,7 +274,7 @@ To see the forward implications, we specialise $B$ to the unit type;
 in this case, the span simplifies to the two projections out of the type of
 equivalences in $\mathcal{U}$:
 
-~~~{.quiver}
+```quiver
 % https://q.uiver.app/#q=WzAsNixbMCwwLCJcXG1hdGhzZntCdW59KFxcdG9wKSJdLFsxLDAsIlxcbWF0aHNme0Nsc30oXFx0b3ApIl0sWzIsMCwiXFxtYXRoc2Z7RmFtfShcXHRvcCkiXSxbMCwxLCJcXG1hdGhjYWx7VX0iXSxbMSwxLCIoWCwgWSA6IFxcbWF0aGNhbHtVfSkgXFx0aW1lcyBYIFxcc2ltZXEgWSJdLFsyLDEsIlxcbWF0aGNhbHtVfSJdLFsxLDAsIlxccGlfXFxkb3duYXJyb3ciLDJdLFsxLDIsIlxccGlfXFx0byJdLFswLDMsIlxcc2ltIiwyXSxbMSw0LCJcXHNpbSIsMl0sWzIsNSwiXFxzaW0iLDJdLFs0LDUsIlxccGleXFxzaW1lcV8yIiwyXSxbNCwzLCJcXHBpXlxcc2ltZXFfMSJdXQ==
 \[\begin{tikzcd}
 	{\mathsf{Bun}(\top)} & {\mathsf{Cls}(\top)} & {\mathsf{Fam}(\top)} \\
@@ -287,7 +287,7 @@ equivalences in $\mathcal{U}$:
 	\arrow["{\pi^\simeq_1}", from=2-2, to=2-1]
 	\arrow["{\pi^\simeq_2}"', from=2-2, to=2-3]
 \end{tikzcd}\]
-~~~
+```
 
 ```agda
   Equiv : U⁺

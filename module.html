@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>@moduleName@</title>
+    <title>$pagetitle$</title>
     <meta name="author" content="Naïm Camille Favier">
-    <meta name="description" content="Naïm Camille Favier's Agda/Mikan stuff">
+    <meta name="description" content="ncf's Mikan scratchpad">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous">
     <link rel="preconnect" href="https://rsms.me/">
@@ -13,12 +13,16 @@
     <script src="highlight-hover.js"></script>
     <script src="main.js"></script>
     <link rel="icon" type="image/png" href="https://monade.li/favicon.png">
+<style>
+$highlighting-css$
+$styles.citations.html()$
+</style>
   </head>
   <body>
     <h3>
       <a href="/">index</a> ∙
-      <a href="https://github.com/ncfavier/agda-stuff/blob/main/@path@">source</a>
+      <a href="https://github.com/ncfavier/agda-stuff/blob/main/$path$">source</a>
     </h3>
-@contents@
+$body$
   </body>
 </html>

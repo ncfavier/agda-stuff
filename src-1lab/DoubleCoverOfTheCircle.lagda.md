@@ -15,7 +15,7 @@ We define the connected double cover of the circle in two ways, as a
 higher inductive family and by recursion, and show that the two
 definitions are equivalent.
 
-~~~{.quiver}
+```quiver
 % stolen from the Symmetry book https://github.com/UniMath/SymmetryBook
 \begin{tikzpicture}
   \node at (2,-1) {$S^1$};
@@ -34,7 +34,7 @@ definitions are equivalent.
   \node[fill,circle,inner sep=1.5pt] at (-1,0) {};
   \node[fill,circle,inner sep=1.5pt] at (-1,1) {};
 \end{tikzpicture}
-~~~
+```
 
 The higher inductive definition has two $n$-cells for every $n$-cell
 in the circle: two points over $\mathsf{base}$ and two loops over

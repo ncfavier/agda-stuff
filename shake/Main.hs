@@ -33,6 +33,7 @@ import Text.Pandoc
 import Text.Pandoc.Filter
 import Text.Pandoc.Walk
 import Text.Pandoc.Citeproc
+import Text.Pandoc.Highlighting
 
 newtype CompileDirectory = CompileDirectory (FilePath, FilePath)
   deriving (Show, Typeable, Eq, Hashable, Binary, NFData)
@@ -105,17 +106,24 @@ optDescrs =
   [ Option [] ["skip-agda"] (NoArg (Right SkipAgda)) "Skip typechecking Agda."
   ]
 
-data SourceType = HTML FilePath | Markdown FilePath
-
 -- | Takes a base source directory and a source filename and returns the
--- corresponding Markdown source and the path to the output file generated
--- by Agda.
-getSourceFile :: FilePath -> FilePath -> Action (T.Text, SourceType)
-getSourceFile sourceDir sourceFile = do
+-- corresponding Markdown source, with Agda code rendered as HTML unless the first
+-- argument is True.
+getMarkdown :: Bool -> FilePath -> FilePath -> Action T.Text
+getMarkdown False _sourceDir sourceFile = do
+  case takeExtensions sourceFile of
+    ".agda" -> do
+      html <- liftIO $ T.readFile (htmlDir </> filenameToModule sourceFile <.> "html")
+      pure $ "<pre class=\"Agda\">" <> html <> "</pre>"
+    ".lagda.md" -> do
+      html <- liftIO $ T.readFile (htmlDir </> filenameToModule sourceFile <.> "md")
+      pure html
+    _ -> fail ("unsupported extension for file " <> sourceFile)
+getMarkdown True sourceDir sourceFile = do
   source <- readFileText' (sourceDir </> sourceFile)
   case takeExtensions sourceFile of
-    ".agda" -> pure (T.unlines ["```agda", source, "```"], HTML $ htmlDir </> filenameToModule sourceFile <.> "html")
-    ".lagda.md" -> pure (source, Markdown $ htmlDir </> filenameToModule sourceFile <.> "md")
+    ".agda" -> pure $ T.unlines ["```agda", source, "```"]
+    ".lagda.md" -> pure source
     _ -> fail ("unsupported extension for file " <> sourceFile)
 
 -- | Compute the scaled height of a diagram (given in SVG), to use as a @style@ tag.
@@ -135,6 +143,11 @@ main :: IO ()
 main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
   let
     skipAgda = SkipAgda `elem` flags
+
+  getPandocTemplate <- newCache \ t -> traced ("pandoc: reading template") $ runIOorExplode $
+    either (throwError . PandocTemplateError . T.pack) pure
+    =<< runWithPartials . compileTemplate t
+    =<< getTemplate t
 
   diagramTemplate <- newCache \ () -> readFileText' "diagram.template.tex"
 
@@ -170,50 +183,47 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
     patchBlock (Header i a@(ident, _, _) inl) | ident /= "" = pure $ Header i a $
       inl ++ [Link ("", ["anchor"], [("aria-hidden", "true")]) [] ("#" <> ident, "")]
     -- Render commutative diagrams
-    patchBlock (CodeBlock (id, classes, attrs) contents) | "quiver" `elem` classes = do
-      let
-        title = fromMaybe "commutative diagram" (lookup "title" attrs)
-      diagramName <- writeDiagram contents
-      need [siteDir </> diagramName]
+    patchBlock (CodeBlock (id, classes, attrs) contents)
+      | "quiver" `elem` classes = do
+        let
+          title = fromMaybe "commutative diagram" (lookup "title" attrs)
+        diagramName <- writeDiagram contents
+        need [siteDir </> diagramName]
 
-      height <- diagramHeight (siteDir </> diagramName)
-      let attrs' = ("style", "height: " <> T.pack (show height) <> "px;"):attrs
+        height <- diagramHeight (siteDir </> diagramName)
+        let attrs' = ("style", "height: " <> T.pack (show height) <> "px;"):attrs
 
-      pure $ Div ("", ["diagram-container"], [])
-        [ Plain [ Image (id, "diagram":classes, attrs') [] (T.pack diagramName, title) ]
-        ]
+        pure $ Div ("", ["diagram-container"], [])
+          [ Plain [ Image (id, "diagram":classes, attrs') [] (T.pack diagramName, title) ]
+          ]
+      | otherwise = do
+        let f c = if c == "agda-ignored" then "agda" else c
+        pure $ CodeBlock (id, f <$> classes, attrs) contents
     patchBlock b = pure b
 
-  -- Render a single type-checked module to HTML.
-  let
-    renderModule (sourceDir, sourceFile) = do
+    -- Render a single module to HTML, after Agda has run.
+    renderModule sourceDir sourceFile = do
       let
-        patchMeta (Pandoc meta doc) = Pandoc meta' doc where
-          meta' = Meta
-            $ Map.insert "bibliography" (MetaString $ T.pack bibliography)
-            $ Map.insert "link-citations" (MetaBool True)
-            $ unMeta meta
-        renderMarkdown markdown = do
-          pandoc <- traced ("pandoc read: " <> sourceFile) $ runIOorExplode do
-            processCitations . patchMeta =<< readMarkdown def {
-              readerExtensions = foldr enableExtension pandocExtensions [Ext_autolink_bare_uris]
-            } markdown
-          pandoc <- walkM patchBlock pandoc
-          pandoc <- applyJSONFilter def [] "pandoc-katex" pandoc
-          traced ("pandoc write: " <> sourceFile) $ runIOorExplode do
-            writeHtml5String def pandoc
+        patchMeta = Meta
+          . Map.insert "title" (MetaString $ T.pack $ filenameToModule sourceFile)
+          . Map.insert "path" (MetaString $ T.pack $ sourceDir </> sourceFile)
+          . Map.insert "bibliography" (MetaString $ T.pack bibliography)
+          . Map.insert "link-citations" (MetaBool True)
+          . unMeta
       need [bibliography]
-      (markdown, agdaOutputFile) <- getSourceFile sourceDir sourceFile
-      if skipAgda then
-        renderMarkdown markdown
-      else do
-        case agdaOutputFile of
-          HTML file -> do
-            html <- liftIO $ T.readFile file
-            pure $ "<pre class=\"Agda\">" <> html <> "</pre>"
-          Markdown file -> do
-            markdown <- liftIO $ T.readFile file
-            renderMarkdown markdown
+      markdown <- getMarkdown skipAgda sourceDir sourceFile
+      pandoc <- traced ("pandoc read: " <> sourceFile) $ runIOorExplode do
+        processCitations . walk patchMeta =<< readMarkdown def {
+          readerExtensions = foldr enableExtension pandocExtensions [Ext_autolink_bare_uris]
+        } markdown
+      pandoc <- walkM patchBlock pandoc
+      pandoc <- applyJSONFilter def [] "pandoc-katex" pandoc
+      moduleTemplate <- getPandocTemplate "file:module.html"
+      traced ("pandoc write: " <> sourceFile) $ runIOorExplode do
+        writeHtml5String def {
+          writerTemplate = Just moduleTemplate,
+          writerHighlightStyle = Just monochrome
+        } pandoc
 
   -- Invoke Agda on a source directory and render all the modules in it.
   compileDirectory <- (. CompileDirectory) <$> addOracle \ (CompileDirectory (sourceDir, everything)) -> do
@@ -235,17 +245,11 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
         source <- parseSource sourceFile
         checkResult <- typeCheckMain TypeCheck source
         callBackend "HTML" IsMain checkResult
-    -- Render modules as needed and insert the results into the module template.
-    moduleTemplate <- readFileText' "module.html"
+    -- Render modules
     for_ sourceFiles \ sourceFile -> do
       let htmlFile = filenameToModule sourceFile <.> "html"
-      html <- renderModule (sourceDir, sourceFile)
-      writeFile' (siteDir </> htmlFile)
-        $ T.unpack
-        $ T.replace "@contents@" html
-        $ T.replace "@moduleName@" (T.pack $ filenameToModule sourceFile)
-        $ T.replace "@path@" (T.pack $ sourceDir </> sourceFile)
-        $ moduleTemplate
+      html <- renderModule sourceDir sourceFile
+      writeFile' (siteDir </> htmlFile) $ T.unpack html
 
   -- Compile all modules.
   "modules" ~> do
@@ -263,7 +267,7 @@ main = shakeArgsWith shakeOpts optDescrs \ flags targets -> pure $ Just do
         <*> readFileLines (htmlDir </> "Everything-1lab.html")
     writeFile' index
       $ T.unpack
-      $ T.replace "@contents@" (T.pack $ unlines $ sortOn importToModule $ filter isImport $ everythingAgda)
+      $ T.replace "$body$" (T.pack $ unlines $ sortOn importToModule $ filter isImport $ everythingAgda)
       $ indexTemplate
     unless skipAgda do
       copyFile' (htmlDir </> "highlight-hover.js") (siteDir </> "highlight-hover.js")

@@ -22,6 +22,11 @@ blockquote {
   text-align: initial;
 }
 
+.warning {
+  border-inline-start: 4px solid #FFE300;
+  padding-inline-start: 12px;
+}
+
 pre {
   /* Otherwise Firefox takes ages trying to justify <pre> blocks... */
   text-align: initial;
